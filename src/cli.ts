@@ -1,6 +1,10 @@
 #!/usr/bin/env node
+import { createRequire } from 'node:module';
 import { Command } from 'commander';
 import { walletCreate, walletList, walletFund } from './commands/wallet.js';
+
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json');
 import { balance } from './commands/balance.js';
 import { pay } from './commands/pay.js';
 import { claim } from './commands/claim.js';
@@ -17,7 +21,7 @@ const program = new Command();
 program
   .name('silk')
   .description('Silkyway SDK — Agent payments on Solana')
-  .version('0.1.0')
+  .version(version)
   .option('--human', 'Human-readable output');
 
 // init
