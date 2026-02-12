@@ -1,6 +1,6 @@
 {
-  "name": "silk",
-  "version": "1.17.0",
+  "name": "@silkysquad/silk",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
