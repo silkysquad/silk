@@ -1,6 +1,6 @@
 {
   "name": "@silkysquad/silk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Agent payments on Solana — cancellable escrow USDC transfers and policy-controlled accounts",
   "type": "module",
   "main": "dist/index.js",
