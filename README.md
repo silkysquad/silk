@@ -5,7 +5,7 @@ Agent payments on Solana. Send and receive USDC with cancellable escrow transfer
 ## Installation
 
 ```bash
-npm install -g @silkyway/silk
+npm install -g @silkysquad/silk
 ```
 
 Requires Node.js 18+.

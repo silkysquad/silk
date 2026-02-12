@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Distribution
 
-- Published to npm registry as `@silkyway/silk`
+- Published to npm registry as `@silkysquad/silk`
 - Published to ClawHub as "silkyway" skill
 - Dedicated repository at https://github.com/silkysquad/silk
 
