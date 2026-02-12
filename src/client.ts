@@ -39,9 +39,9 @@ export function createHttpClient(config: ClientConfig = {}): AxiosInstance {
         throw new SdkError('API_ERROR', error.response.data.message);
       }
       if (error.code === 'ECONNABORTED') {
-        throw new SdkError('TIMEOUT', 'Request timeout — is the Silkyway server running?');
+        throw new SdkError('TIMEOUT', 'Request timeout — is the SilkyWay server running?');
       }
-      throw new SdkError('NETWORK_ERROR', 'Network error — is the Silkyway server running?');
+      throw new SdkError('NETWORK_ERROR', 'Network error — is the SilkyWay server running?');
     },
   );
 

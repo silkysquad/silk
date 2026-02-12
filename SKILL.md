@@ -1,14 +1,14 @@
 ---
 name: silk
-version: 0.1.0
-description: Agent payments on Solana. Send and receive USDC with cancellable escrow transfers. Optional on-chain accounts with policy-enforced spending limits for human-delegated automation.
+version: 1.0.4
+description: Agent banking and payments on Solana. Send and receive stablecoins with cancellable escrow transfers. Optional on-chain accounts with policy-enforced spending limits for human-delegated automation.
 homepage: https://silkyway.ai
 metadata: {"category":"payments","api_base":"https://api.silkyway.ai","author":"silkysquad","openclaw":{"requires":{"bins":["silk"]},"install":[{"id":"silk-npm","kind":"node","label":"Silk CLI","package":"@silkysquad/silk"}]}}
 ---
 
-# Silkyway
+# SilkyWay
 
-Agent payments on Solana. Send and receive USDC — non-custodial, on-chain.
+Agent banking and payments on Solana. Send and receive stablecoins — non-custodial, on-chain.
 
 ## Install
 
@@ -72,7 +72,7 @@ The output includes a **claim link** (`claimUrl`) — a URL you can share with t
 silk pay 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx 10 --memo "Payment for code review"
 
 # Output includes claimUrl — share it with the recipient
-# Example: https://app.silkyway.so/transfers/9aE5kBqRvF3...?cluster=devnet
+# Example: https://app.silkyway.ai/transfers/9aE5kBqRvF3...?cluster=devnet
 
 # Check your balance
 silk balance
@@ -144,9 +144,9 @@ A persistent `agentId` (UUID) is auto-generated on first use for session continu
 
 ## On-Chain Accounts (Optional)
 
-A Silkyway account is an on-chain wallet — like a bank account — that a human owner creates and funds with USDC. The owner can add agents as **operators** with per-transaction spending limits enforced on-chain. This is useful for automations, recurring payments, or any scenario where a human wants to delegate spending authority to an agent with guardrails.
+A SilkyWay account is an on-chain wallet — like a bank account — that a human owner creates and funds with USDC. The owner can add agents as **operators** with per-transaction spending limits enforced on-chain. This is useful for automations, recurring payments, or any scenario where a human wants to delegate spending authority to an agent with guardrails.
 
-You don't need an account to use Silkyway. Escrow payments (`silk pay`) work with just a wallet. Accounts are an optional upgrade when your human wants to give you direct spending access with on-chain controls.
+You don't need an account to use SilkyWay. Escrow payments (`silk pay`) work with just a wallet. Accounts are an optional upgrade when your human wants to give you direct spending access with on-chain controls.
 
 **Key concepts:**
 - **Owner** — The human who creates and funds the account. Full control: can transfer any amount, pause the account, add/remove operators.
@@ -214,7 +214,7 @@ If your human has set up an account for you, prefer `silk account send` — it's
 | `silk account sync [--wallet <label>] [--account <pda>]` | Discover and sync your on-chain account |
 | `silk account status [--wallet <label>]` | Show account balance, spending limit, and pause state |
 | `silk account send <recipient> <amount> [--memo <text>] [--wallet <label>]` | Send from account (policy-enforced on-chain) |
-| `silk chat <message>` | Ask Silkyway support agent a question |
+| `silk chat <message>` | Ask SilkyWay support agent a question |
 | `silk config set-cluster <cluster>` | Set cluster (`mainnet-beta` or `devnet`) |
 | `silk config get-cluster` | Show current cluster and API URL |
 | `silk config reset-cluster` | Reset cluster to default (`mainnet-beta`) |
@@ -223,7 +223,7 @@ Use `--wallet <label>` on any command to select a non-default wallet. Recipients
 
 ## How Transactions Work
 
-Silkyway is non-custodial — your private keys never leave your machine.
+SilkyWay is non-custodial — your private keys never leave your machine.
 
 Every payment follows a build-sign-submit flow:
 
@@ -529,7 +529,7 @@ Note: `balance` and `perTxLimit` are in raw token units. USDC has 6 decimals, so
 
 #### POST /api/account/transfer
 
-Build an unsigned transfer transaction from a Silkyway account. Used by `silk account send`.
+Build an unsigned transfer transaction from a SilkyWay account. Used by `silk account send`.
 
 **Request:**
 ```json
@@ -594,7 +594,7 @@ Build an unsigned deposit transaction. Used by the setup page to fund the accoun
 
 ### POST /chat
 
-Send a message to the Silkyway support agent. Returns an AI-generated response.
+Send a message to the SilkyWay support agent. Returns an AI-generated response.
 
 **Request:**
 ```json

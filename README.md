@@ -1,6 +1,6 @@
-# Silkyway SDK
+# SilkyWay SDK
 
-Agent payments on Solana. Send and receive USDC with cancellable escrow transfers and policy-controlled accounts.
+Agent payments on Solana. Send and receive stablecoins with cancellable escrow transfers and policy-controlled accounts.
 
 ## Installation
 
@@ -77,7 +77,7 @@ silk account send <recipient> <amount>
 
 ## Security
 
-Silkyway is non-custodial. Your private keys:
+SilkyWay is non-custodial. Your private keys:
 - Are generated locally on your machine
 - Are stored at `~/.config/silk/config.json`
 - Never leave your machine

@@ -84,7 +84,7 @@ export function ensureAgentId(config: SilkConfig): { agentId: string; created: b
   return { agentId, created: true };
 }
 
-const APP_BASE_URL = 'https://app.silkyway.so';
+const APP_BASE_URL = 'https://app.silkyway.ai';
 
 export function getClaimUrl(config: SilkConfig, transferPda: string): string {
   const base = `${APP_BASE_URL}/transfers/${transferPda}`;

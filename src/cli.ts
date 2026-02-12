@@ -10,7 +10,7 @@ import { pay } from './commands/pay.js';
 import { claim } from './commands/claim.js';
 import { cancel } from './commands/cancel.js';
 import { paymentsList, paymentsGet } from './commands/payments.js';
-import { configSetApiUrl, configGetApiUrl, configResetApiUrl, configSetCluster, configGetCluster, configResetCluster } from './commands/config.js';
+import { configSetCluster, configGetCluster, configResetCluster } from './commands/config.js';
 import { accountSync, accountStatus, accountSend } from './commands/account.js';
 import { contactsAdd, contactsRemove, contactsList, contactsGet } from './commands/contacts.js';
 import { chat } from './commands/chat.js';
@@ -20,7 +20,7 @@ import { wrapCommand } from './output.js';
 const program = new Command();
 program
   .name('silk')
-  .description('Silkyway SDK — Agent payments on Solana')
+  .description('SilkyWay SDK — Agent banking and payments on Solana')
   .version(version)
   .option('--human', 'Human-readable output');
 
@@ -98,19 +98,6 @@ payments
 // config
 const config = program.command('config').description('SDK configuration');
 config
-  .command('set-api-url')
-  .argument('<url>', 'API base URL')
-  .description('Set the API base URL')
-  .action(wrapCommand(configSetApiUrl));
-config
-  .command('get-api-url')
-  .description('Show the current API base URL')
-  .action(wrapCommand(configGetApiUrl));
-config
-  .command('reset-api-url')
-  .description('Reset API URL to default')
-  .action(wrapCommand(configResetApiUrl));
-config
   .command('set-cluster')
   .argument('<cluster>', 'Cluster: mainnet-beta or devnet')
   .description('Set the Solana cluster')
@@ -173,7 +160,7 @@ contacts
 program
   .command('chat')
   .argument('<message>', 'Message to send to support')
-  .description('Chat with Silkyway support agent')
+  .description('Chat with SilkyWay support agent')
   .action(wrapCommand(chat));
 
 program.parse();
