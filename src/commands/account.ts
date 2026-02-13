@@ -1,6 +1,6 @@
 import { Keypair, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
-import { loadConfig, saveConfig, getWallet, getApiUrl, AccountInfo } from '../config.js';
+import { loadConfig, saveConfig, getWallet, getApiUrl, getSetupUrl, AccountInfo } from '../config.js';
 import { createHttpClient } from '../client.js';
 import { outputSuccess } from '../output.js';
 import { SdkError, toSilkysigError } from '../errors.js';
@@ -88,7 +88,7 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
       action: 'sync',
       found: 0,
       message: `No account found for wallet "${wallet.label}" (${wallet.address}).`,
-      hint: `Ask your human to set up your account at:\n  https://app.silkyway.ai/account/setup?agent=${wallet.address}`,
+      hint: `Ask your human to set up your account at:\n  ${getSetupUrl(config, wallet.address)}`,
     });
     return;
   }

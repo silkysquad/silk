@@ -92,6 +92,12 @@ export function getClaimUrl(config: SilkConfig, transferPda: string): string {
   return cluster === 'devnet' ? `${base}?cluster=devnet` : base;
 }
 
+export function getSetupUrl(config: SilkConfig, agentAddress: string): string {
+  const base = `${APP_BASE_URL}/account/setup?agent=${agentAddress}`;
+  const cluster = getCluster(config);
+  return cluster === 'devnet' ? `${base}&cluster=devnet` : base;
+}
+
 export function getAgentId(config: SilkConfig): string {
   const result = ensureAgentId(config);
   if (result.created) {
