@@ -1,6 +1,6 @@
 {
   "name": "@silkysquad/silk",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Agent banking and payments on Solana — cancellable escrow stablecoin transfers and policy-controlled accounts",
   "type": "module",
   "main": "dist/index.js",
