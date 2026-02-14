@@ -11,7 +11,7 @@ import { claim } from './commands/claim.js';
 import { cancel } from './commands/cancel.js';
 import { paymentsList, paymentsGet } from './commands/payments.js';
 import { configSetCluster, configGetCluster, configResetCluster } from './commands/config.js';
-import { accountSync, accountStatus, accountSend } from './commands/account.js';
+import { accountSync, accountStatus, accountEvents, accountDeposit, accountWithdraw, accountSend } from './commands/account.js';
 import { contactsAdd, contactsRemove, contactsList, contactsGet } from './commands/contacts.js';
 import { chat } from './commands/chat.js';
 import { init } from './commands/init.js';
@@ -124,6 +124,24 @@ account
   .option('--wallet <label>', 'Wallet to check')
   .description('Show account balance and policy')
   .action(wrapCommand(accountStatus));
+account
+  .command('events')
+  .option('--type <eventType>', 'Filter by event type')
+  .option('--wallet <label>', 'Wallet to check')
+  .description('List account events')
+  .action(wrapCommand(accountEvents));
+account
+  .command('deposit')
+  .argument('<amount>', 'Amount in USDC')
+  .option('--wallet <label>', 'Wallet to deposit from')
+  .description('Deposit into account')
+  .action(wrapCommand(accountDeposit));
+account
+  .command('withdraw')
+  .argument('<amount>', 'Amount in USDC')
+  .option('--wallet <label>', 'Wallet to withdraw to')
+  .description('Withdraw from account to your wallet')
+  .action(wrapCommand(accountWithdraw));
 account
   .command('send')
   .argument('<recipient>', 'Recipient wallet address')

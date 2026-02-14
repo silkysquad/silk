@@ -93,7 +93,8 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
     return;
   }
 
-  // Auto-select first account
+  // Deterministic selection: sort by PDA so the same account is always picked
+  accounts.sort((a, b) => a.pda.localeCompare(b.pda));
   const selected = accounts[0];
   const slot = selected.operatorSlot!;
 
@@ -126,12 +127,12 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
       balance: selected.balance,
       perTxLimit: Number(slot.perTxLimit),
       mint: selected.mint,
+      warning: `This wallet is operator on ${accounts.length} accounts. Using ${selected.pda}. The SDK currently supports one account at a time. To target a specific account: silk account sync --account <pda>`,
       allAccounts: accounts.map((a) => ({
         pda: a.pda,
         owner: a.owner,
         balance: a.balance,
       })),
-      hint: 'To use a different account: silk account sync --account <pda>',
     });
   }
 }
@@ -162,6 +163,103 @@ export async function accountStatus(opts: { wallet?: string }) {
     operatorIndex: config.account.operatorIndex,
     perTxLimit: perTxLimitHuman,
   });
+}
+
+export async function accountEvents(opts: { type?: string; wallet?: string }) {
+  const config = loadConfig();
+  getWallet(config, opts.wallet); // validate wallet exists
+
+  if (!config.account) {
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+  }
+
+  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const params = opts.type ? `?eventType=${opts.type}` : '';
+  const res = await client.get(`/api/account/${config.account.pda}/events${params}`);
+  const events = res.data.data;
+
+  outputSuccess({ action: 'events', pda: config.account.pda, events });
+}
+
+export async function accountDeposit(amount: string, opts: { wallet?: string }) {
+  const config = loadConfig();
+  const wallet = getWallet(config, opts.wallet);
+
+  if (!config.account) {
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+  }
+
+  const amountNum = validateAmount(amount);
+  const amountRaw = Math.round(amountNum * 10 ** config.account.mintDecimals);
+
+  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+
+  // 1. Build unsigned transaction
+  const buildRes = await client.post('/api/account/deposit', {
+    depositor: wallet.address,
+    accountPda: config.account.pda,
+    amount: amountRaw,
+  });
+
+  const { transaction: txBase64 } = buildRes.data.data;
+
+  // 2. Sign the transaction
+  const tx = Transaction.from(Buffer.from(txBase64, 'base64'));
+  const keypair = Keypair.fromSecretKey(bs58.decode(wallet.privateKey));
+  tx.sign(keypair);
+
+  // 3. Submit signed transaction
+  try {
+    const submitRes = await client.post('/api/tx/submit', {
+      signedTx: tx.serialize().toString('base64'),
+    });
+
+    const { txid } = submitRes.data.data;
+    outputSuccess({ action: 'deposit', txid, amount: amountNum });
+  } catch (err) {
+    throw toSilkysigError(err);
+  }
+}
+
+export async function accountWithdraw(amount: string, opts: { wallet?: string }) {
+  const config = loadConfig();
+  const wallet = getWallet(config, opts.wallet);
+
+  if (!config.account) {
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+  }
+
+  const amountNum = validateAmount(amount);
+  const amountRaw = Math.round(amountNum * 10 ** config.account.mintDecimals);
+
+  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+
+  // 1. Build unsigned transaction (transfer back to own wallet)
+  const buildRes = await client.post('/api/account/transfer', {
+    signer: wallet.address,
+    accountPda: config.account.pda,
+    recipient: wallet.address,
+    amount: amountRaw,
+  });
+
+  const { transaction: txBase64 } = buildRes.data.data;
+
+  // 2. Sign the transaction
+  const tx = Transaction.from(Buffer.from(txBase64, 'base64'));
+  const keypair = Keypair.fromSecretKey(bs58.decode(wallet.privateKey));
+  tx.sign(keypair);
+
+  // 3. Submit signed transaction
+  try {
+    const submitRes = await client.post('/api/tx/submit', {
+      signedTx: tx.serialize().toString('base64'),
+    });
+
+    const { txid } = submitRes.data.data;
+    outputSuccess({ action: 'withdraw', txid, amount: amountNum });
+  } catch (err) {
+    throw toSilkysigError(err);
+  }
 }
 
 export async function accountSend(recipient: string, amount: string, opts: { memo?: string; wallet?: string }) {
