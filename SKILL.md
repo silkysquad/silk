@@ -1,6 +1,6 @@
 ---
 name: silk
-version: 1.0.4
+version: 1.0.8
 description: Agent banking and payments on Solana. Send and receive stablecoins with cancellable escrow transfers. Optional on-chain accounts with policy-enforced spending limits for human-delegated automation.
 homepage: https://silkyway.ai
 metadata: {"category":"payments","api_base":"https://api.silkyway.ai","author":"silkysquad","openclaw":{"requires":{"bins":["silk"]},"install":[{"id":"silk-npm","kind":"node","label":"Silk CLI","package":"@silkysquad/silk"}]}}
@@ -181,6 +181,43 @@ If the amount exceeds your per-transaction limit, the transaction is **rejected 
 
 If `silk account sync` returns "No account found", your human hasn't created the account yet — share the setup URL with them.
 
+### Depositing and withdrawing
+
+You can deposit tokens from your wallet into the account, or withdraw them back:
+
+```bash
+# Deposit 10 USDC from your wallet into the account
+silk account deposit 10
+
+# Withdraw 5 USDC from the account back to your wallet
+silk account withdraw 5
+```
+
+`deposit` moves tokens from your wallet into the Silk account. `withdraw` is a convenience wrapper around `account send` where the recipient is your own wallet — it's subject to the same per-transaction limit as any other transfer.
+
+### Viewing account activity
+
+Query the audit trail for your account:
+
+```bash
+# List all events
+silk account events
+
+# Filter by event type
+silk account events --type TRANSFER
+silk account events --type DEPOSIT
+```
+
+Event types: `ACCOUNT_CREATED`, `ACCOUNT_CLOSED`, `DEPOSIT`, `TRANSFER`, `OPERATOR_ADDED`, `OPERATOR_REMOVED`, `PAUSED`, `UNPAUSED`.
+
+### Multi-account behavior
+
+If your wallet is an operator on multiple accounts (different owners added you), `silk account sync` picks one deterministically (sorted by PDA) and warns you. To target a specific account:
+
+```bash
+silk account sync --account <pda>
+```
+
 ### Accounts vs escrow payments
 
 | | Accounts | Escrow (`silk pay`) |
@@ -213,6 +250,9 @@ If your human has set up an account for you, prefer `silk account send` — it's
 | `silk contacts get <name>` | Look up a contact's address |
 | `silk account sync [--wallet <label>] [--account <pda>]` | Discover and sync your on-chain account |
 | `silk account status [--wallet <label>]` | Show account balance, spending limit, and pause state |
+| `silk account events [--type <eventType>] [--wallet <label>]` | List account events (audit trail) |
+| `silk account deposit <amount> [--wallet <label>]` | Deposit USDC from wallet into account |
+| `silk account withdraw <amount> [--wallet <label>]` | Withdraw USDC from account back to your wallet |
 | `silk account send <recipient> <amount> [--memo <text>] [--wallet <label>]` | Send from account (policy-enforced on-chain) |
 | `silk chat <message>` | Ask SilkyWay support agent a question |
 | `silk config set-cluster <cluster>` | Set cluster (`mainnet-beta` or `devnet`) |
@@ -581,7 +621,7 @@ Build an unsigned create-account transaction. Used by the setup page (human-faci
 
 #### POST /api/account/deposit
 
-Build an unsigned deposit transaction. Used by the setup page to fund the account.
+Build an unsigned deposit transaction. Used by `silk account deposit` and the setup page.
 
 **Request:**
 ```json
@@ -591,6 +631,28 @@ Build an unsigned deposit transaction. Used by the setup page to fund the accoun
   "amount": 10000000
 }
 ```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `depositor` | string | yes | Wallet address depositing the tokens |
+| `accountPda` | string | yes | The account's on-chain PDA |
+| `amount` | number | yes | Amount in raw token units (e.g. `10000000` = 10.00 USDC) |
+
+Sign and submit the returned transaction via `POST /api/tx/submit`.
+
+#### GET /api/account/:pda/events
+
+List audit trail events for an account. Used by `silk account events`.
+
+**Example:** `GET /api/account/9aE5kBqRvF3mNcXz8BpR3mFVDg2Thh3AG6sFRPqNrDJ4/events`
+
+**Query parameters:**
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `eventType` | string | no | Filter by event type: `ACCOUNT_CREATED`, `ACCOUNT_CLOSED`, `DEPOSIT`, `TRANSFER`, `OPERATOR_ADDED`, `OPERATOR_REMOVED`, `PAUSED`, `UNPAUSED` |
+
+**Example with filter:** `GET /api/account/9aE5kBqRvF3.../events?eventType=TRANSFER`
 
 ### POST /chat
 
