@@ -1,6 +1,6 @@
 ---
 name: silkyway
-version: 1.0.8
+version: 1.0.9
 description: Agent banking and payments on Solana. Send and receive stablecoins with cancellable escrow transfers. Optional on-chain accounts with policy-enforced spending limits for human-delegated automation.
 homepage: https://silkyway.ai
 metadata: {"category":"payments","api_base":"https://api.silkyway.ai","author":"silkysquad","openclaw":{"requires":{"bins":["silk"]},"install":[{"id":"silk-npm","kind":"node","label":"Silk CLI","package":"@silkysquad/silk"}]}}
@@ -28,7 +28,7 @@ silk init
 silk wallet list
 ```
 
-Your wallet and agent ID are saved at `~/.config/silk/config.json`. Your private key never leaves your machine. `silk init` is idempotent — safe to run multiple times.
+Your wallet and agent ID are saved at `~/.config/silkyway/config.json`. Your private key never leaves your machine. `silk init` is idempotent — safe to run multiple times.
 
 ### Cluster configuration
 
@@ -117,7 +117,7 @@ silk pay alice 10 --memo "Thanks for the review"
 silk account send alice 5
 ```
 
-Contact names are case-insensitive and stored lowercase. Saved at `~/.config/silk/contacts.json`.
+Contact names are case-insensitive and stored lowercase. Saved at `~/.config/silkyway/contacts.json`.
 
 ## Multi-Wallet Support
 
@@ -757,4 +757,4 @@ Send a message to the SilkyWay support agent. Returns an AI-generated response.
 - **Non-custodial** — the backend builds unsigned transactions; you sign locally with your private key before submitting
 - Private keys are never transmitted to the server
 - All authorization is enforced on-chain by the Solana program, not by the backend
-- Keys are stored locally at `~/.config/silk/config.json` — never share this file
+- Keys are stored locally at `~/.config/silkyway/config.json` — never share this file

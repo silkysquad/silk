@@ -68,12 +68,15 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
     config.account = accountInfo;
     saveConfig(config);
 
+    const balanceHuman = acct.mintDecimals > 0 ? acct.balance / 10 ** acct.mintDecimals : acct.balance;
+    const perTxLimitHuman = acct.mintDecimals > 0 ? Number(op.perTxLimit) / 10 ** acct.mintDecimals : Number(op.perTxLimit);
+
     outputSuccess({
       action: 'sync',
       pda: acct.pda,
       owner: acct.owner,
-      balance: acct.balance,
-      perTxLimit: Number(op.perTxLimit),
+      balance: balanceHuman,
+      perTxLimit: perTxLimitHuman,
       mint: acct.mint,
     });
     return;
@@ -110,13 +113,16 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
   config.account = accountInfo;
   saveConfig(config);
 
+  const formatBalance = (bal: number, decimals: number) => decimals > 0 ? bal / 10 ** decimals : bal;
+  const formatLimit = (limit: string, decimals: number) => decimals > 0 ? Number(limit) / 10 ** decimals : Number(limit);
+
   if (accounts.length === 1) {
     outputSuccess({
       action: 'sync',
       pda: selected.pda,
       owner: selected.owner,
-      balance: selected.balance,
-      perTxLimit: Number(slot.perTxLimit),
+      balance: formatBalance(selected.balance, selected.mintDecimals),
+      perTxLimit: formatLimit(slot.perTxLimit, selected.mintDecimals),
       mint: selected.mint,
     });
   } else {
@@ -124,14 +130,14 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
       action: 'sync',
       pda: selected.pda,
       owner: selected.owner,
-      balance: selected.balance,
-      perTxLimit: Number(slot.perTxLimit),
+      balance: formatBalance(selected.balance, selected.mintDecimals),
+      perTxLimit: formatLimit(slot.perTxLimit, selected.mintDecimals),
       mint: selected.mint,
       warning: `This wallet is operator on ${accounts.length} accounts. Using ${selected.pda}. The SDK currently supports one account at a time. To target a specific account: silk account sync --account <pda>`,
       allAccounts: accounts.map((a) => ({
         pda: a.pda,
         owner: a.owner,
-        balance: a.balance,
+        balance: formatBalance(a.balance, a.mintDecimals),
       })),
     });
   }
@@ -152,12 +158,13 @@ export async function accountStatus(opts: { wallet?: string }) {
   const op = acct.operators.find((o) => o.index === config.account!.operatorIndex);
   const perTxLimit = op ? Number(op.perTxLimit) : config.account.perTxLimit;
   const perTxLimitHuman = acct.mintDecimals > 0 ? perTxLimit / 10 ** acct.mintDecimals : perTxLimit;
+  const balanceHuman = acct.mintDecimals > 0 ? acct.balance / 10 ** acct.mintDecimals : acct.balance;
 
   outputSuccess({
     action: 'status',
     pda: acct.pda,
     owner: acct.owner,
-    balance: acct.balance,
+    balance: balanceHuman,
     mint: acct.mint,
     isPaused: acct.isPaused,
     operatorIndex: config.account.operatorIndex,

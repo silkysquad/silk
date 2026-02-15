@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- Non-custodial: private keys stored locally at `~/.config/silk/config.json`
+- Non-custodial: private keys stored locally at `~/.config/silkyway/config.json`
 - All authorization enforced on-chain by Solana programs
 - Backend never sees private keys (build-sign-submit flow)
 

@@ -4,7 +4,7 @@ import os from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { SdkError } from './errors.js';
 
-export const CONFIG_DIR = path.join(os.homedir(), '.config', 'silk');
+export const CONFIG_DIR = path.join(os.homedir(), '.config', 'silkyway');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 export interface WalletEntry {

@@ -79,7 +79,7 @@ silk account send <recipient> <amount>
 
 SilkyWay is non-custodial. Your private keys:
 - Are generated locally on your machine
-- Are stored at `~/.config/silk/config.json`
+- Are stored at `~/.config/silkyway/config.json`
 - Never leave your machine
 - Are never transmitted to any server
 
