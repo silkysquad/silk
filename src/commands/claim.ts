@@ -1,6 +1,6 @@
 import { Keypair, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
-import { loadConfig, getWallet, getApiUrl } from '../config.js';
+import { loadConfig, getWallet, getApiUrl, getApiKey } from '../config.js';
 import { createHttpClient } from '../client.js';
 import { outputSuccess } from '../output.js';
 import { validateClaim } from '../validate.js';
@@ -8,7 +8,7 @@ import { validateClaim } from '../validate.js';
 export async function claim(transferPda: string, opts: { wallet?: string }) {
   const config = loadConfig();
   const wallet = getWallet(config, opts.wallet);
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   await validateClaim(client, transferPda, wallet.address);
 

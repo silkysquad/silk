@@ -16,6 +16,9 @@ Requires Node.js 18+.
 # Initialize wallet
 silk init
 
+# Register API key (required for all commands)
+silk auth register
+
 # Check balance
 silk balance
 
@@ -31,6 +34,7 @@ silk pay <recipient> <amount>
 
 ## Features
 
+- **API Key Auth** - Solana ed25519 challenge-response authentication; `SILK_API_KEY` env var for CI
 - **Escrow Transfers** - Send USDC with claim/cancel options
 - **On-Chain Accounts** - Policy-enforced spending limits for agent operators
 - **Multi-Wallet** - Manage multiple Solana wallets

@@ -1,6 +1,6 @@
 import { Keypair, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
-import { loadConfig, saveConfig, getWallet, getApiUrl, getSetupUrl, AccountInfo } from '../config.js';
+import { loadConfig, saveConfig, getWallet, getApiUrl, getApiKey, getSetupUrl, AccountInfo } from '../config.js';
 import { createHttpClient } from '../client.js';
 import { outputSuccess } from '../output.js';
 import { SdkError, toSilkysigError } from '../errors.js';
@@ -39,7 +39,7 @@ interface AccountDetail {
 export async function accountSync(opts: { wallet?: string; account?: string }) {
   const config = loadConfig();
   const wallet = getWallet(config, opts.wallet);
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   if (opts.account) {
     // Direct PDA sync
@@ -151,7 +151,7 @@ export async function accountStatus(opts: { wallet?: string }) {
     throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
   }
 
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
   const res = await client.get(`/api/account/${config.account.pda}`);
   const acct: AccountDetail = res.data.data;
 
@@ -180,7 +180,7 @@ export async function accountEvents(opts: { type?: string; wallet?: string }) {
     throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
   }
 
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
   const params = opts.type ? `?eventType=${opts.type}` : '';
   const res = await client.get(`/api/account/${config.account.pda}/events${params}`);
   const events = res.data.data;
@@ -199,7 +199,7 @@ export async function accountDeposit(amount: string, opts: { wallet?: string }) 
   const amountNum = validateAmount(amount);
   const amountRaw = Math.round(amountNum * 10 ** config.account.mintDecimals);
 
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   // 1. Build unsigned transaction
   const buildRes = await client.post('/api/account/deposit', {
@@ -239,7 +239,7 @@ export async function accountWithdraw(amount: string, opts: { wallet?: string })
   const amountNum = validateAmount(amount);
   const amountRaw = Math.round(amountNum * 10 ** config.account.mintDecimals);
 
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   // 1. Build unsigned transaction (transfer back to own wallet)
   const buildRes = await client.post('/api/account/transfer', {
@@ -284,7 +284,7 @@ export async function accountSend(recipient: string, amount: string, opts: { mem
   // Convert to smallest units
   const amountRaw = Math.round(amountNum * 10 ** config.account.mintDecimals);
 
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   // 1. Build unsigned transaction
   const buildRes = await client.post('/api/account/transfer', {

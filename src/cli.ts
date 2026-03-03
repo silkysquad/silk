@@ -2,6 +2,7 @@
 import { createRequire } from 'node:module';
 import { Command } from 'commander';
 import { walletCreate, walletList, walletFund } from './commands/wallet.js';
+import { authRegister, authStatus, authRevoke } from './commands/auth.js';
 
 const require = createRequire(import.meta.url);
 const { version } = require('../package.json');
@@ -29,6 +30,22 @@ program
   .command('init')
   .description('Initialize Silk CLI (create default wallet and agent ID)')
   .action(wrapCommand(init));
+
+// auth commands
+const auth = program.command('auth').description('Manage API key authentication');
+auth
+  .command('register')
+  .option('--wallet <label>', 'Wallet to sign the challenge with')
+  .description('Register and receive an API key via Solana signature')
+  .action(wrapCommand(authRegister));
+auth
+  .command('status')
+  .description('Show API key status')
+  .action(wrapCommand(authStatus));
+auth
+  .command('revoke')
+  .description('Revoke the current API key')
+  .action(wrapCommand(authRevoke));
 
 // wallet commands
 const wallet = program.command('wallet').description('Manage wallets');

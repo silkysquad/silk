@@ -1,6 +1,6 @@
 import { Keypair } from '@solana/web3.js';
 import bs58 from 'bs58';
-import { loadConfig, saveConfig, getWallet, getApiUrl } from '../config.js';
+import { loadConfig, saveConfig, getWallet, getApiUrl, getApiKey } from '../config.js';
 import { createHttpClient } from '../client.js';
 import { SdkError } from '../errors.js';
 import { outputSuccess } from '../output.js';
@@ -38,7 +38,7 @@ export async function walletList() {
 export async function walletFund(opts: { sol?: boolean; usdc?: boolean; wallet?: string }) {
   const config = loadConfig();
   const wallet = getWallet(config, opts.wallet);
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   const doSol = opts.sol || (!opts.sol && !opts.usdc);
   const doUsdc = opts.usdc || (!opts.sol && !opts.usdc);

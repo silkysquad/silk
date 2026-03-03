@@ -1,4 +1,4 @@
-import { loadConfig, getWallet, getApiUrl } from '../config.js';
+import { loadConfig, getWallet, getApiUrl, getApiKey } from '../config.js';
 import { createHttpClient } from '../client.js';
 import { SdkError } from '../errors.js';
 import { outputSuccess } from '../output.js';
@@ -6,7 +6,7 @@ import { outputSuccess } from '../output.js';
 export async function paymentsList(opts: { wallet?: string }) {
   const config = loadConfig();
   const wallet = getWallet(config, opts.wallet);
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   const res = await client.get(`/api/transfers`, { params: { wallet: wallet.address } });
   const transfers = res.data.data.transfers;
@@ -16,7 +16,7 @@ export async function paymentsList(opts: { wallet?: string }) {
 
 export async function paymentsGet(transferPda: string) {
   const config = loadConfig();
-  const client = createHttpClient({ baseUrl: getApiUrl(config) });
+  const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
 
   const res = await client.get(`/api/transfers/${transferPda}`);
   const transfer = res.data.data.transfer;

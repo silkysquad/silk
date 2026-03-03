@@ -33,6 +33,7 @@ export interface SilkConfig {
   cluster?: SolanaCluster;
   account?: AccountInfo;
   agentId?: string;
+  apiKey?: string;
 }
 
 function defaultConfig(): SilkConfig {
@@ -104,4 +105,12 @@ export function getAgentId(config: SilkConfig): string {
     saveConfig(config);
   }
   return result.agentId;
+}
+
+export function getApiKey(config: SilkConfig): string | undefined {
+  return config.apiKey || process.env.SILK_API_KEY;
+}
+
+export function clearApiKey(config: SilkConfig): void {
+  delete config.apiKey;
 }

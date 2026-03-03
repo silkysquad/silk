@@ -45,6 +45,32 @@ silk config get-cluster           # show current
 | `mainnet-beta` | `https://api.silkyway.ai` | Mainnet (real USDC) |
 | `devnet` | `https://devnet-api.silkyway.ai` | Devnet (test USDC) |
 
+### Authentication
+
+All API endpoints require an API key sent as `Authorization: Bearer <key>`. Keys are issued via Solana ed25519 challenge-response — the server proves you control the wallet.
+
+```bash
+# First-time setup
+silk init                    # create wallet + agent ID
+silk auth register           # sign challenge, save API key
+silk balance                 # now works
+
+# Check status
+silk auth status             # shows fingerprint and source
+
+# Rotate or remove key
+silk auth revoke             # revokes on server + removes from config
+```
+
+For CI/automation, set the `SILK_API_KEY` env var instead of writing to disk:
+
+```bash
+export SILK_API_KEY=sw_<key>
+silk balance   # uses env var, no config file needed
+```
+
+Keys have the prefix `sw_` followed by 64 hex characters.
+
 ### Fund your wallet (devnet)
 
 On devnet, use the faucet — it gives you 0.1 SOL (for transaction fees) + 100 USDC:
@@ -235,6 +261,9 @@ If your human has set up an account for you, prefer `silk account send` — it's
 | Command | Description |
 |---------|-------------|
 | `silk init` | Initialize CLI (create wallet, agent ID, and contacts file) |
+| `silk auth register [--wallet <label>]` | Sign a challenge and register an API key |
+| `silk auth status` | Show whether an API key is configured and its source |
+| `silk auth revoke` | Revoke the current API key on the server and remove it from config |
 | `silk wallet create [label]` | Create a new wallet |
 | `silk wallet list` | List all wallets with addresses |
 | `silk wallet fund [--sol] [--usdc] [--wallet <label>]` | Fund wallet from devnet faucet |
@@ -278,6 +307,60 @@ The backend handles Solana complexity (PDA derivation, instruction building, blo
 Base URL: `https://api.silkyway.ai` (mainnet) or `https://devnet-api.silkyway.ai` (devnet)
 
 All requests use `Content-Type: application/json`.
+
+### Authentication Endpoints
+
+#### GET /api/auth/challenge?pubkey=\<pubkey\>
+
+Request a one-time nonce to sign. The nonce expires after a short window.
+
+**Example:** `GET /api/auth/challenge?pubkey=BrKz4GQN1sxZWoGLbNTojp4G3JCFLRkSYk3mSRWhKsXp`
+
+**Response:**
+```json
+{
+  "ok": true,
+  "data": {
+    "nonce": "silkyway:1738900000000:abc123"
+  }
+}
+```
+
+#### POST /api/auth/register
+
+Verify the signature and issue an API key. Sign the nonce bytes with your ed25519 private key (seed bytes — first 32 bytes of the Solana keypair).
+
+**Request:**
+```json
+{
+  "pubkey": "BrKz4GQN1sxZWoGLbNTojp4G3JCFLRkSYk3mSRWhKsXp",
+  "signature": "<base64-encoded ed25519 signature of the nonce>"
+}
+```
+
+**Response:**
+```json
+{
+  "ok": true,
+  "data": {
+    "apiKey": "sw_a1b2c3d4e5f6..."
+  }
+}
+```
+
+#### POST /api/auth/revoke
+
+Revoke the API key associated with the `Authorization: Bearer` header. Requires a valid key.
+
+**Request:** (empty body)
+
+**Response:**
+```json
+{
+  "ok": true,
+  "data": { "revoked": true }
+}
+```
 
 ### Escrow Endpoints
 
@@ -723,6 +806,9 @@ Send a message to the SilkyWay support agent. Returns an AI-generated response.
 
 | Error | HTTP | Description |
 |-------|------|-------------|
+| `MISSING_API_KEY` | 401 | No API key provided — run `silk auth register` |
+| `INVALID_API_KEY` | 401 | API key not recognized or revoked |
+| `INVALID_SIGNATURE` | 401 | ed25519 signature verification failed during registration |
 | `INVALID_PUBKEY` | 400 | Invalid Solana public key format |
 | `INVALID_AMOUNT` | 400 | Amount must be positive |
 | `MISSING_FIELD` | 400 | Required field not provided |

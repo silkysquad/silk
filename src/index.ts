@@ -1,4 +1,4 @@
-export { loadConfig, saveConfig, getWallet, getApiUrl, CONFIG_DIR } from './config.js';
+export { loadConfig, saveConfig, getWallet, getApiUrl, getApiKey, clearApiKey, CONFIG_DIR } from './config.js';
 export type { SilkConfig, WalletEntry } from './config.js';
 export { loadContacts, saveContacts, addContact, removeContact, getContact, listContacts, resolveRecipient, initContacts } from './contacts.js';
 export type { Contact, ContactsStore } from './contacts.js';
@@ -9,3 +9,5 @@ export type { TransferInfo, TokenInfo, PoolInfo } from './transfers.js';
 export { SdkError, ANCHOR_ERROR_MAP, toSdkError } from './errors.js';
 export { outputSuccess, outputError, wrapCommand } from './output.js';
 export { validateAddress, validateAmount, fetchTransfer, validateClaim, validateCancel, validatePay } from './validate.js';
+export { analyzeTransaction, verifyIntent } from './verify/index.js';
+export type { TransactionAnalysis, InstructionAnalysis, RiskFlag, VerifyResult, Intent, AnalyzeOptions } from './verify/index.js';
