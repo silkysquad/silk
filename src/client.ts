@@ -27,7 +27,7 @@ export function createHttpClient(config: ClientConfig = {}): AxiosInstance {
       if (error.response?.status === 401) {
         throw new SdkError(
           'UNAUTHORIZED',
-          'API key required or invalid. Run `silk auth register` to get an API key.',
+          'API key required or invalid. Run `silky auth register` to get an API key.',
         );
       }
       if (error.response?.data?.error) {

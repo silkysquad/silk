@@ -3,7 +3,7 @@ name: silkyway
 version: 1.0.9
 description: Agent banking and payments on Solana. Send and receive stablecoins with cancellable escrow transfers. Optional on-chain accounts with policy-enforced spending limits for human-delegated automation.
 homepage: https://silkyway.ai
-metadata: {"category":"payments","api_base":"https://api.silkyway.ai","author":"silkysquad","openclaw":{"requires":{"bins":["silk"]},"install":[{"id":"silk-npm","kind":"node","label":"Silk CLI","package":"@silkysquad/silk"}]}}
+metadata: {"category":"payments","api_base":"https://api.silkyway.ai","author":"silkysquad","openclaw":{"requires":{"bins":["silky"]},"install":[{"id":"silk-npm","kind":"node","label":"Silk CLI","package":"@silkysquad/silk"}]}}
 ---
 
 # SilkyWay
@@ -22,22 +22,22 @@ Requires Node.js 18+.
 
 ```bash
 # 1. Initialize (creates wallet and agent ID)
-silk init
+silky init
 
 # 2. Check your wallet address
-silk wallet list
+silky wallet list
 ```
 
-Your wallet and agent ID are saved at `~/.config/silkyway/config.json`. Your private key never leaves your machine. `silk init` is idempotent — safe to run multiple times.
+Your wallet and agent ID are saved at `~/.config/silkyway/config.json`. Your private key never leaves your machine. `silky init` is idempotent — safe to run multiple times.
 
 ### Cluster configuration
 
 Default cluster is `mainnet-beta` (real USDC). Switch to `devnet` for testing with free tokens.
 
 ```bash
-silk config set-cluster devnet    # test tokens
-silk config set-cluster mainnet-beta  # real USDC
-silk config get-cluster           # show current
+silky config set-cluster devnet    # test tokens
+silky config set-cluster mainnet-beta  # real USDC
+silky config get-cluster           # show current
 ```
 
 | Cluster | API Base URL | Network |
@@ -51,22 +51,22 @@ All API endpoints require an API key sent as `Authorization: Bearer <key>`. Keys
 
 ```bash
 # First-time setup
-silk init                    # create wallet + agent ID
-silk auth register           # sign challenge, save API key
-silk balance                 # now works
+silky init                    # create wallet + agent ID
+silky auth register           # sign challenge, save API key
+silky balance                 # now works
 
 # Check status
-silk auth status             # shows fingerprint and source
+silky auth status             # shows fingerprint and source
 
 # Rotate or remove key
-silk auth revoke             # revokes on server + removes from config
+silky auth revoke             # revokes on server + removes from config
 ```
 
-For CI/automation, set the `SILK_API_KEY` env var instead of writing to disk:
+For CI/automation, set the `SILKY_API_KEY` env var instead of writing to disk:
 
 ```bash
-export SILK_API_KEY=sw_<key>
-silk balance   # uses env var, no config file needed
+export SILKY_API_KEY=sw_<key>
+silky balance   # uses env var, no config file needed
 ```
 
 Keys have the prefix `sw_` followed by 64 hex characters.
@@ -76,9 +76,9 @@ Keys have the prefix `sw_` followed by 64 hex characters.
 On devnet, use the faucet — it gives you 0.1 SOL (for transaction fees) + 100 USDC:
 
 ```bash
-silk config set-cluster devnet
-silk wallet fund
-silk balance
+silky config set-cluster devnet
+silky wallet fund
+silky balance
 ```
 
 On mainnet, send SOL and USDC to your wallet address manually. SOL is required for Solana transaction fees.
@@ -86,26 +86,26 @@ On mainnet, send SOL and USDC to your wallet address manually. SOL is required f
 ## Sending Payments
 
 ```bash
-silk pay <recipient> <amount> [--memo <text>]
+silky pay <recipient> <amount> [--memo <text>]
 ```
 
-This locks USDC into on-chain escrow. The recipient claims it with `silk claim`, or you cancel for a full refund with `silk cancel`.
+This locks USDC into on-chain escrow. The recipient claims it with `silky claim`, or you cancel for a full refund with `silky cancel`.
 
 The output includes a **claim link** (`claimUrl`) — a URL you can share with the recipient's human. They open it in a browser, connect their wallet, and claim the payment. This is the easiest way for a non-technical recipient to claim.
 
 ```bash
 # Send 10 USDC
-silk pay 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx 10 --memo "Payment for code review"
+silky pay 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx 10 --memo "Payment for code review"
 
 # Output includes claimUrl — share it with the recipient
 # Example: https://app.silkyway.ai/transfers/9aE5kBqRvF3...?cluster=devnet
 
 # Check your balance
-silk balance
+silky balance
 
 # View your transfers
-silk payments list
-silk payments get <transfer-pda>
+silky payments list
+silky payments get <transfer-pda>
 ```
 
 ### Claiming a payment
@@ -113,8 +113,8 @@ silk payments get <transfer-pda>
 If someone sent you a payment:
 
 ```bash
-silk payments list
-silk claim <transfer-pda>
+silky payments list
+silky claim <transfer-pda>
 ```
 
 ### Cancelling a payment
@@ -122,7 +122,7 @@ silk claim <transfer-pda>
 Cancel a payment you sent (before the recipient claims it):
 
 ```bash
-silk cancel <transfer-pda>
+silky cancel <transfer-pda>
 ```
 
 ## Address Book
@@ -130,17 +130,17 @@ silk cancel <transfer-pda>
 Save contacts so you can send payments by name instead of address.
 
 ```bash
-silk contacts add alice 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx
-silk contacts list
-silk contacts get alice
-silk contacts remove alice
+silky contacts add alice 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx
+silky contacts list
+silky contacts get alice
+silky contacts remove alice
 ```
 
 Once saved, use names anywhere you'd use an address:
 
 ```bash
-silk pay alice 10 --memo "Thanks for the review"
-silk account send alice 5
+silky pay alice 10 --memo "Thanks for the review"
+silky account send alice 5
 ```
 
 Contact names are case-insensitive and stored lowercase. Saved at `~/.config/silkyway/contacts.json`.
@@ -148,22 +148,22 @@ Contact names are case-insensitive and stored lowercase. Saved at `~/.config/sil
 ## Multi-Wallet Support
 
 ```bash
-silk wallet create second-wallet
-silk wallet fund --wallet second-wallet
-silk wallet list
+silky wallet create second-wallet
+silky wallet fund --wallet second-wallet
+silky wallet list
 ```
 
 Use `--wallet <label>` on any command to select a non-default wallet:
 
 ```bash
-silk pay <address> 10 --wallet second-wallet
-silk balance --wallet second-wallet
+silky pay <address> 10 --wallet second-wallet
+silky balance --wallet second-wallet
 ```
 
 ## Support Chat
 
 ```bash
-silk chat "How do I send a payment?"
+silky chat "How do I send a payment?"
 ```
 
 A persistent `agentId` (UUID) is auto-generated on first use for session continuity.
@@ -172,7 +172,7 @@ A persistent `agentId` (UUID) is auto-generated on first use for session continu
 
 A SilkyWay account is an on-chain wallet — like a bank account — that a human owner creates and funds with USDC. The owner can add agents as **operators** with per-transaction spending limits enforced on-chain. This is useful for automations, recurring payments, or any scenario where a human wants to delegate spending authority to an agent with guardrails.
 
-You don't need an account to use SilkyWay. Escrow payments (`silk pay`) work with just a wallet. Accounts are an optional upgrade when your human wants to give you direct spending access with on-chain controls.
+You don't need an account to use SilkyWay. Escrow payments (`silky pay`) work with just a wallet. Accounts are an optional upgrade when your human wants to give you direct spending access with on-chain controls.
 
 **Key concepts:**
 - **Owner** — The human who creates and funds the account. Full control: can transfer any amount, pause the account, add/remove operators.
@@ -184,7 +184,7 @@ You don't need an account to use SilkyWay. Escrow payments (`silk pay`) work wit
 
 Your human creates the account — you cannot create it yourself.
 
-1. Share the setup URL with your human (replace with your address from `silk wallet list`):
+1. Share the setup URL with your human (replace with your address from `silky wallet list`):
    ```
    https://app.silkyway.ai/account/setup?agent=YOUR_WALLET_ADDRESS
    ```
@@ -194,18 +194,18 @@ Your human creates the account — you cannot create it yourself.
 
 2. After your human creates the account, sync it:
    ```bash
-   silk account sync
+   silky account sync
    ```
 
 3. Check your status and send payments:
    ```bash
-   silk account status
-   silk account send <recipient> <amount>
+   silky account status
+   silky account send <recipient> <amount>
    ```
 
 If the amount exceeds your per-transaction limit, the transaction is **rejected on-chain** with `ExceedsPerTxLimit`. If the account is paused, you get `AccountPaused`.
 
-If `silk account sync` returns "No account found", your human hasn't created the account yet — share the setup URL with them.
+If `silky account sync` returns "No account found", your human hasn't created the account yet — share the setup URL with them.
 
 ### Depositing and withdrawing
 
@@ -213,10 +213,10 @@ You can deposit tokens from your wallet into the account, or withdraw them back:
 
 ```bash
 # Deposit 10 USDC from your wallet into the account
-silk account deposit 10
+silky account deposit 10
 
 # Withdraw 5 USDC from the account back to your wallet
-silk account withdraw 5
+silky account withdraw 5
 ```
 
 `deposit` moves tokens from your wallet into the Silk account. `withdraw` is a convenience wrapper around `account send` where the recipient is your own wallet — it's subject to the same per-transaction limit as any other transfer.
@@ -227,66 +227,66 @@ Query the audit trail for your account:
 
 ```bash
 # List all events
-silk account events
+silky account events
 
 # Filter by event type
-silk account events --type TRANSFER
-silk account events --type DEPOSIT
+silky account events --type TRANSFER
+silky account events --type DEPOSIT
 ```
 
 Event types: `ACCOUNT_CREATED`, `ACCOUNT_CLOSED`, `DEPOSIT`, `TRANSFER`, `OPERATOR_ADDED`, `OPERATOR_REMOVED`, `PAUSED`, `UNPAUSED`.
 
 ### Multi-account behavior
 
-If your wallet is an operator on multiple accounts (different owners added you), `silk account sync` picks one deterministically (sorted by PDA) and warns you. To target a specific account:
+If your wallet is an operator on multiple accounts (different owners added you), `silky account sync` picks one deterministically (sorted by PDA) and warns you. To target a specific account:
 
 ```bash
-silk account sync --account <pda>
+silky account sync --account <pda>
 ```
 
 ### Accounts vs escrow payments
 
-| | Accounts | Escrow (`silk pay`) |
+| | Accounts | Escrow (`silky pay`) |
 |---|---|---|
 | **Setup required** | Human creates account + adds you as operator | None — just a funded wallet |
 | **Spending limits** | Per-transaction limit enforced on-chain | No limits |
-| **Recipient claims?** | No — direct transfer, tokens arrive immediately | Yes — recipient must `silk claim` |
+| **Recipient claims?** | No — direct transfer, tokens arrive immediately | Yes — recipient must `silky claim` |
 | **Cancellable?** | No — transfer is instant | Yes — sender can cancel before claim |
 | **Best for** | Ongoing payments with human oversight | One-off payments between parties |
 
-If your human has set up an account for you, prefer `silk account send` — it's simpler (no claim step) and your human controls the spending limits.
+If your human has set up an account for you, prefer `silky account send` — it's simpler (no claim step) and your human controls the spending limits.
 
 ## CLI Reference
 
 | Command | Description |
 |---------|-------------|
-| `silk init` | Initialize CLI (create wallet, agent ID, and contacts file) |
-| `silk auth register [--wallet <label>]` | Sign a challenge and register an API key |
-| `silk auth status` | Show whether an API key is configured and its source |
-| `silk auth revoke` | Revoke the current API key on the server and remove it from config |
-| `silk wallet create [label]` | Create a new wallet |
-| `silk wallet list` | List all wallets with addresses |
-| `silk wallet fund [--sol] [--usdc] [--wallet <label>]` | Fund wallet from devnet faucet |
-| `silk balance [--wallet <label>]` | Show SOL and USDC balances |
-| `silk pay <recipient> <amount> [--memo <text>] [--wallet <label>]` | Send USDC payment into escrow |
-| `silk claim <transfer-pda> [--wallet <label>]` | Claim a received payment |
-| `silk cancel <transfer-pda> [--wallet <label>]` | Cancel a sent payment |
-| `silk payments list [--wallet <label>]` | List transfers |
-| `silk payments get <transfer-pda>` | Get transfer details |
-| `silk contacts add <name> <address>` | Save a contact to the address book |
-| `silk contacts remove <name>` | Remove a contact |
-| `silk contacts list` | List all saved contacts |
-| `silk contacts get <name>` | Look up a contact's address |
-| `silk account sync [--wallet <label>] [--account <pda>]` | Discover and sync your on-chain account |
-| `silk account status [--wallet <label>]` | Show account balance, spending limit, and pause state |
-| `silk account events [--type <eventType>] [--wallet <label>]` | List account events (audit trail) |
-| `silk account deposit <amount> [--wallet <label>]` | Deposit USDC from wallet into account |
-| `silk account withdraw <amount> [--wallet <label>]` | Withdraw USDC from account back to your wallet |
-| `silk account send <recipient> <amount> [--memo <text>] [--wallet <label>]` | Send from account (policy-enforced on-chain) |
-| `silk chat <message>` | Ask SilkyWay support agent a question |
-| `silk config set-cluster <cluster>` | Set cluster (`mainnet-beta` or `devnet`) |
-| `silk config get-cluster` | Show current cluster and API URL |
-| `silk config reset-cluster` | Reset cluster to default (`mainnet-beta`) |
+| `silky init` | Initialize CLI (create wallet, agent ID, and contacts file) |
+| `silky auth register [--wallet <label>]` | Sign a challenge and register an API key |
+| `silky auth status` | Show whether an API key is configured and its source |
+| `silky auth revoke` | Revoke the current API key on the server and remove it from config |
+| `silky wallet create [label]` | Create a new wallet |
+| `silky wallet list` | List all wallets with addresses |
+| `silky wallet fund [--sol] [--usdc] [--wallet <label>]` | Fund wallet from devnet faucet |
+| `silky balance [--wallet <label>]` | Show SOL and USDC balances |
+| `silky pay <recipient> <amount> [--memo <text>] [--wallet <label>]` | Send USDC payment into escrow |
+| `silky claim <transfer-pda> [--wallet <label>]` | Claim a received payment |
+| `silky cancel <transfer-pda> [--wallet <label>]` | Cancel a sent payment |
+| `silky payments list [--wallet <label>]` | List transfers |
+| `silky payments get <transfer-pda>` | Get transfer details |
+| `silky contacts add <name> <address>` | Save a contact to the address book |
+| `silky contacts remove <name>` | Remove a contact |
+| `silky contacts list` | List all saved contacts |
+| `silky contacts get <name>` | Look up a contact's address |
+| `silky account sync [--wallet <label>] [--account <pda>]` | Discover and sync your on-chain account |
+| `silky account status [--wallet <label>]` | Show account balance, spending limit, and pause state |
+| `silky account events [--type <eventType>] [--wallet <label>]` | List account events (audit trail) |
+| `silky account deposit <amount> [--wallet <label>]` | Deposit USDC from wallet into account |
+| `silky account withdraw <amount> [--wallet <label>]` | Withdraw USDC from account back to your wallet |
+| `silky account send <recipient> <amount> [--memo <text>] [--wallet <label>]` | Send from account (policy-enforced on-chain) |
+| `silky chat <message>` | Ask SilkyWay support agent a question |
+| `silky config set-cluster <cluster>` | Set cluster (`mainnet-beta` or `devnet`) |
+| `silky config get-cluster` | Show current cluster and API URL |
+| `silky config reset-cluster` | Reset cluster to default (`mainnet-beta`) |
 
 Use `--wallet <label>` on any command to select a non-default wallet. Recipients accept contact names or Solana addresses.
 
@@ -590,7 +590,7 @@ Airdrop devnet SOL or USDC. Devnet only.
 
 #### GET /api/account/by-operator/:pubkey
 
-Find accounts where your wallet is an operator. Used by `silk account sync`.
+Find accounts where your wallet is an operator. Used by `silky account sync`.
 
 **Example:** `GET /api/account/by-operator/7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx`
 
@@ -622,7 +622,7 @@ Returns an empty array if no accounts found — this means your human hasn't set
 
 #### GET /api/account/:pda
 
-Get full account details. Used by `silk account status`.
+Get full account details. Used by `silky account status`.
 
 **Example:** `GET /api/account/9aE5kBqRvF3mNcXz8BpR3mFVDg2Thh3AG6sFRPqNrDJ4`
 
@@ -652,7 +652,7 @@ Note: `balance` and `perTxLimit` are in raw token units. USDC has 6 decimals, so
 
 #### POST /api/account/transfer
 
-Build an unsigned transfer transaction from a SilkyWay account. Used by `silk account send`.
+Build an unsigned transfer transaction from a SilkyWay account. Used by `silky account send`.
 
 **Request:**
 ```json
@@ -704,7 +704,7 @@ Build an unsigned create-account transaction. Used by the setup page (human-faci
 
 #### POST /api/account/deposit
 
-Build an unsigned deposit transaction. Used by `silk account deposit` and the setup page.
+Build an unsigned deposit transaction. Used by `silky account deposit` and the setup page.
 
 **Request:**
 ```json
@@ -725,7 +725,7 @@ Sign and submit the returned transaction via `POST /api/tx/submit`.
 
 #### GET /api/account/:pda/events
 
-List audit trail events for an account. Used by `silk account events`.
+List audit trail events for an account. Used by `silky account events`.
 
 **Example:** `GET /api/account/9aE5kBqRvF3mNcXz8BpR3mFVDg2Thh3AG6sFRPqNrDJ4/events`
 
@@ -759,7 +759,7 @@ Send a message to the SilkyWay support agent. Returns an AI-generated response.
 {
   "ok": true,
   "data": {
-    "message": "Use silk pay...",
+    "message": "Use silky pay...",
     "agentId": "uuid-v4"
   }
 }
@@ -806,7 +806,7 @@ Send a message to the SilkyWay support agent. Returns an AI-generated response.
 
 | Error | HTTP | Description |
 |-------|------|-------------|
-| `MISSING_API_KEY` | 401 | No API key provided — run `silk auth register` |
+| `MISSING_API_KEY` | 401 | No API key provided — run `silky auth register` |
 | `INVALID_API_KEY` | 401 | API key not recognized or revoked |
 | `INVALID_SIGNATURE` | 401 | ed25519 signature verification failed during registration |
 | `INVALID_PUBKEY` | 400 | Invalid Solana public key format |

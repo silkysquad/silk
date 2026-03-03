@@ -14,16 +14,16 @@ Requires Node.js 18+.
 
 ```bash
 # Initialize wallet
-silk init
+silky init
 
 # Register API key (required for all commands)
-silk auth register
+silky auth register
 
 # Check balance
-silk balance
+silky balance
 
 # Send payment
-silk pay <recipient> <amount>
+silky pay <recipient> <amount>
 ```
 
 ## Documentation
@@ -34,7 +34,7 @@ silk pay <recipient> <amount>
 
 ## Features
 
-- **API Key Auth** - Solana ed25519 challenge-response authentication; `SILK_API_KEY` env var for CI
+- **API Key Auth** - Solana ed25519 challenge-response authentication; `SILKY_API_KEY` env var for CI
 - **Escrow Transfers** - Send USDC with claim/cancel options
 - **On-Chain Accounts** - Policy-enforced spending limits for agent operators
 - **Multi-Wallet** - Manage multiple Solana wallets
@@ -49,34 +49,34 @@ silk pay <recipient> <amount>
 
 ```bash
 # Send 10 USDC to an address
-silk pay 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx 10 --memo "Payment for code review"
+silky pay 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx 10 --memo "Payment for code review"
 
 # Send to a contact
-silk contacts add alice 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx
-silk pay alice 10
+silky contacts add alice 7xKXz9BpR3mFVDg2Thh3AG6sFRPqNrDJ4bHUkR8Y7vNx
+silky pay alice 10
 ```
 
 ### Claim a Payment
 
 ```bash
 # List incoming payments
-silk payments list
+silky payments list
 
 # Claim a transfer
-silk claim <transfer-pda>
+silky claim <transfer-pda>
 ```
 
 ### Use an Account
 
 ```bash
 # Sync your operator account (set up by human via web UI)
-silk account sync
+silky account sync
 
 # Check account status and spending limit
-silk account status
+silky account status
 
 # Send from account (subject to per-tx limit)
-silk account send <recipient> <amount>
+silky account send <recipient> <amount>
 ```
 
 ## Security

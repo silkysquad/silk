@@ -133,7 +133,7 @@ export async function accountSync(opts: { wallet?: string; account?: string }) {
       balance: formatBalance(selected.balance, selected.mintDecimals),
       perTxLimit: formatLimit(slot.perTxLimit, selected.mintDecimals),
       mint: selected.mint,
-      warning: `This wallet is operator on ${accounts.length} accounts. Using ${selected.pda}. The SDK currently supports one account at a time. To target a specific account: silk account sync --account <pda>`,
+      warning: `This wallet is operator on ${accounts.length} accounts. Using ${selected.pda}. The SDK currently supports one account at a time. To target a specific account: silky account sync --account <pda>`,
       allAccounts: accounts.map((a) => ({
         pda: a.pda,
         owner: a.owner,
@@ -148,7 +148,7 @@ export async function accountStatus(opts: { wallet?: string }) {
   getWallet(config, opts.wallet); // validate wallet exists
 
   if (!config.account) {
-    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silky account sync');
   }
 
   const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
@@ -177,7 +177,7 @@ export async function accountEvents(opts: { type?: string; wallet?: string }) {
   getWallet(config, opts.wallet); // validate wallet exists
 
   if (!config.account) {
-    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silky account sync');
   }
 
   const client = createHttpClient({ baseUrl: getApiUrl(config), apiKey: getApiKey(config) });
@@ -193,7 +193,7 @@ export async function accountDeposit(amount: string, opts: { wallet?: string }) 
   const wallet = getWallet(config, opts.wallet);
 
   if (!config.account) {
-    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silky account sync');
   }
 
   const amountNum = validateAmount(amount);
@@ -233,7 +233,7 @@ export async function accountWithdraw(amount: string, opts: { wallet?: string })
   const wallet = getWallet(config, opts.wallet);
 
   if (!config.account) {
-    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silky account sync');
   }
 
   const amountNum = validateAmount(amount);
@@ -275,7 +275,7 @@ export async function accountSend(recipient: string, amount: string, opts: { mem
   const wallet = getWallet(config, opts.wallet);
 
   if (!config.account) {
-    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silk account sync');
+    throw new SdkError('NO_ACCOUNT', 'No account synced. Run: silky account sync');
   }
 
   validateAddress(recipient, 'recipient');

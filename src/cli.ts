@@ -20,7 +20,7 @@ import { wrapCommand } from './output.js';
 
 const program = new Command();
 program
-  .name('silk')
+  .name('silky')
   .description('SilkyWay SDK — Agent banking and payments on Solana')
   .version(version)
   .option('--human', 'Human-readable output');

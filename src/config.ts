@@ -58,7 +58,7 @@ export function getWallet(config: SilkConfig, label?: string): WalletEntry {
   const target = label || config.defaultWallet;
   const wallet = config.wallets.find((w) => w.label === target);
   if (!wallet) {
-    throw new SdkError('WALLET_NOT_FOUND', `Wallet "${target}" not found. Run: silk wallet create`);
+    throw new SdkError('WALLET_NOT_FOUND', `Wallet "${target}" not found. Run: silky wallet create`);
   }
   return wallet;
 }
@@ -73,7 +73,7 @@ export function getCluster(config: SilkConfig): SolanaCluster {
 }
 
 export function getApiUrl(config: SilkConfig): string {
-  return config.apiUrl || process.env.SILK_API_URL || CLUSTER_API_URLS[getCluster(config)];
+  return config.apiUrl || process.env.SILKY_API_URL || CLUSTER_API_URLS[getCluster(config)];
 }
 
 export function ensureAgentId(config: SilkConfig): { agentId: string; created: boolean } {
@@ -108,7 +108,7 @@ export function getAgentId(config: SilkConfig): string {
 }
 
 export function getApiKey(config: SilkConfig): string | undefined {
-  return config.apiKey || process.env.SILK_API_KEY;
+  return config.apiKey || process.env.SILKY_API_KEY;
 }
 
 export function clearApiKey(config: SilkConfig): void {
