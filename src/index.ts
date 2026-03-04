@@ -11,3 +11,25 @@ export { outputSuccess, outputError, wrapCommand } from './output.js';
 export { validateAddress, validateAmount, fetchTransfer, validateClaim, validateCancel, validatePay } from './validate.js';
 export { analyzeTransaction, verifyIntent } from './verify/index.js';
 export type { TransactionAnalysis, InstructionAnalysis, RiskFlag, VerifyResult, Intent, AnalyzeOptions } from './verify/index.js';
+
+// Cross-chain intent framework
+export { verifyIntent as verifyIntentV2 } from './intent/index.js';
+export type {
+  Intent as IntentV2,
+  SingleIntent,
+  CompoundIntent,
+  ActionIntent,
+  Constraint,
+  TokenRef,
+  Confidence,
+  TransferIntent,
+  SwapIntent,
+  StakeIntent,
+  LendIntent,
+  BorrowIntent,
+  ApproveIntent,
+  WithdrawIntent,
+  CustomIntent,
+  VerifyResult as VerifyResultV2,
+} from './intent/index.js';
+export { evaluateConstraint, createTokenRegistry, parseChain, normalizeAddress, isEvmChain } from './intent/index.js';

@@ -10,6 +10,7 @@ import { decodeSilkysig } from './decoders/silkysig.js';
 import { decodeJupiter } from './decoders/jupiter.js';
 import { applyGlobalFlags, applyTokenTransferFlags } from './flags.js';
 import { createTokenCache } from './rpc.js';
+import { extractAmountFromHuman, parseDecimal, withinRelativeTolerance } from '../amount-utils.js';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,12 +38,16 @@ export interface TransactionAnalysis {
   summary: string;
 }
 
+type TokenSelector =
+  | { token: string; tokenAddress?: never }
+  | { token?: never; tokenAddress: string };
+
 export type Intent =
-  | { type: 'create_transfer'; sender: string; recipient: string; amount: number; token?: string; mint?: string; memo?: string }
+  | ({ type: 'create_transfer'; sender: string; recipient: string; amount: string; memo?: string } & TokenSelector)
   | { type: 'claim_transfer'; claimer: string; transferPda: string }
   | { type: 'cancel_transfer'; canceller: string; transferPda: string }
-  | { type: 'transfer_from_account'; owner: string; recipient: string; amount: number; token?: string; mint?: string }
-  | { type: 'deposit'; owner: string; amount: number; token?: string; mint?: string };
+  | ({ type: 'transfer_from_account'; owner: string; recipient: string; amount: string } & TokenSelector)
+  | ({ type: 'deposit'; owner: string; amount: string } & TokenSelector);
 
 export interface VerifyResult {
   verified: boolean;
@@ -322,7 +327,7 @@ export async function analyzeTransaction(
 
 // ─── verifyIntent ─────────────────────────────────────────────────────────────
 
-const AMOUNT_TOLERANCE = 0.0001; // 0.01%
+const AMOUNT_TOLERANCE = parseDecimal('0.0001')!; // 0.01%
 
 export async function verifyIntent(
   txBase64: string,
@@ -331,6 +336,7 @@ export async function verifyIntent(
 ): Promise<VerifyResult> {
   const analysis = await analyzeTransaction(txBase64, opts);
   const discrepancies: string[] = [];
+  validateIntentShape(intent, discrepancies);
 
   // Any error-severity flag is an automatic failure
   const errorFlags = analysis.flags.filter((f) => f.severity === 'error');
@@ -363,6 +369,7 @@ export async function verifyIntent(
       if (txAmount !== null && !amountsMatch(txAmount, intent.amount, p)) {
         discrepancies.push(`Amount mismatch: expected ${intent.amount}, got ${humanAmount(p)}`);
       }
+      compareTokenSelector(intent, p, discrepancies);
       if (intent.memo && p['memo'] && p['memo'] !== intent.memo) {
         discrepancies.push(`Memo mismatch: expected "${intent.memo}", got "${p['memo']}"`);
       }
@@ -400,6 +407,7 @@ export async function verifyIntent(
       if (txAmount !== null && !amountsMatch(txAmount, intent.amount, p)) {
         discrepancies.push(`Amount mismatch: expected ${intent.amount}, got ${humanAmount(p)}`);
       }
+      compareTokenSelector(intent, p, discrepancies);
       break;
     }
 
@@ -411,6 +419,7 @@ export async function verifyIntent(
       if (txAmount !== null && !amountsMatch(txAmount, intent.amount, p)) {
         discrepancies.push(`Amount mismatch: expected ${intent.amount}, got ${humanAmount(p)}`);
       }
+      compareTokenSelector(intent, p, discrepancies);
       break;
     }
   }
@@ -428,15 +437,10 @@ function normalize(addr: string): string {
   try { return new PublicKey(addr).toBase58(); } catch { return addr; }
 }
 
-function rawAmount(rawStr: string | undefined, params: Record<string, unknown>): number | null {
+function rawAmount(rawStr: string | undefined, params: Record<string, unknown>): string | null {
   if (!rawStr) return null;
-  // amountHuman is like "100 USDC" — parse the numeric part
   const human = params['amountHuman'] as string | undefined;
-  if (human) {
-    const num = parseFloat(human.split(' ')[0]);
-    return isNaN(num) ? null : num;
-  }
-  return null;
+  return extractAmountFromHuman(human);
 }
 
 function humanAmount(params: Record<string, unknown>): string {
@@ -444,11 +448,67 @@ function humanAmount(params: Record<string, unknown>): string {
 }
 
 function amountsMatch(
-  txAmount: number,
-  intentAmount: number,
+  txAmount: string,
+  intentAmount: string,
   _params: Record<string, unknown>,
 ): boolean {
-  if (intentAmount === 0) return txAmount === 0;
-  const diff = Math.abs(txAmount - intentAmount) / intentAmount;
-  return diff <= AMOUNT_TOLERANCE;
+  const parsedTxAmount = parseDecimal(txAmount);
+  const parsedIntentAmount = parseDecimal(intentAmount);
+  if (parsedTxAmount === null || parsedIntentAmount === null) {
+    return false;
+  }
+  return withinRelativeTolerance(parsedIntentAmount, parsedTxAmount, AMOUNT_TOLERANCE);
+}
+
+function parseAmountString(value: string): string | null {
+  const parsed = parseDecimal(value);
+  return parsed ? value : null;
+}
+
+function validateIntentShape(intent: Intent, discrepancies: string[]): void {
+  switch (intent.type) {
+    case 'create_transfer':
+    case 'transfer_from_account':
+    case 'deposit': {
+      const hasToken = typeof intent.token === 'string' && intent.token.length > 0;
+      const hasTokenAddress = typeof intent.tokenAddress === 'string' && intent.tokenAddress.length > 0;
+      if ((hasToken && hasTokenAddress) || (!hasToken && !hasTokenAddress)) {
+        discrepancies.push(`Intent ${intent.type} must provide exactly one of 'token' or 'tokenAddress'.`);
+      }
+
+      if (parseAmountString(intent.amount) === null) {
+        discrepancies.push(`Invalid amount for ${intent.type}: expected numeric string, got "${intent.amount}".`);
+      }
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+function compareTokenSelector(
+  intent: { token?: string; tokenAddress?: string },
+  params: Record<string, unknown>,
+  discrepancies: string[],
+): void {
+  const mint = params['mint'] as string | undefined;
+  if (!mint) return;
+
+  if (intent.tokenAddress && normalize(mint) !== normalize(intent.tokenAddress)) {
+    discrepancies.push(`Token address mismatch: expected ${intent.tokenAddress}, got ${mint}`);
+  }
+
+  if (intent.token) {
+    const txSymbol = extractSymbolFromAmountHuman(params['amountHuman'] as string | undefined);
+    if (txSymbol && txSymbol.toUpperCase() !== intent.token.toUpperCase()) {
+      discrepancies.push(`Token symbol mismatch: expected ${intent.token}, got ${txSymbol}`);
+    }
+  }
+}
+
+function extractSymbolFromAmountHuman(amountHuman: string | undefined): string | null {
+  if (!amountHuman) return null;
+  const parts = amountHuman.trim().split(/\s+/);
+  if (parts.length < 2) return null;
+  return parts[1] ?? null;
 }

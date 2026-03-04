@@ -46,6 +46,22 @@ function buildHandshakeTransferTx(
 }
 
 describe('verifyIntent', () => {
+  it('fails when create_transfer omits token selector', async () => {
+    const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 100_000_000n);
+
+    const intent: Intent = {
+      type: 'create_transfer',
+      sender: ALICE.publicKey.toBase58(),
+      recipient: BOB.publicKey.toBase58(),
+      amount: '100',
+    } as Intent;
+
+    const result = await verifyIntent(txBase64, intent);
+
+    expect(result.verified).toBe(false);
+    expect(result.discrepancies.some((d) => d.includes("exactly one of 'token' or 'tokenAddress'"))).toBe(true);
+  });
+
   it('verifies a matching create_transfer intent', async () => {
     const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 100_000_000n);
 
@@ -53,7 +69,8 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: ALICE.publicKey.toBase58(),
       recipient: BOB.publicKey.toBase58(),
-      amount: 100,
+      amount: '100',
+      token: 'USDC',
     };
 
     const result = await verifyIntent(txBase64, intent);
@@ -71,7 +88,8 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: wrongSender.publicKey.toBase58(),
       recipient: BOB.publicKey.toBase58(),
-      amount: 100,
+      amount: '100',
+      token: 'USDC',
     };
 
     const result = await verifyIntent(txBase64, intent);
@@ -88,7 +106,8 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: ALICE.publicKey.toBase58(),
       recipient: wrongRecipient.publicKey.toBase58(),
-      amount: 100,
+      amount: '100',
+      token: 'USDC',
     };
 
     const result = await verifyIntent(txBase64, intent);
@@ -104,7 +123,8 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: ALICE.publicKey.toBase58(),
       recipient: BOB.publicKey.toBase58(),
-      amount: 200, // Expected 200, got 100
+      amount: '200', // Expected 200, got 100
+      token: 'USDC',
     };
 
     const result = await verifyIntent(txBase64, intent);
@@ -121,7 +141,25 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: ALICE.publicKey.toBase58(),
       recipient: BOB.publicKey.toBase58(),
-      amount: 100,
+      amount: '100',
+      token: 'USDC',
+    };
+
+    const result = await verifyIntent(txBase64, intent);
+
+    expect(result.verified).toBe(true);
+    expect(result.discrepancies).toHaveLength(0);
+  });
+
+  it('handles large decimal amounts without floating-point precision loss', async () => {
+    const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 123_456_789_012_345_678n);
+
+    const intent: Intent = {
+      type: 'create_transfer',
+      sender: ALICE.publicKey.toBase58(),
+      recipient: BOB.publicKey.toBase58(),
+      amount: '123456789012.345678',
+      token: 'USDC',
     };
 
     const result = await verifyIntent(txBase64, intent);
@@ -137,7 +175,8 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: ALICE.publicKey.toBase58(),
       recipient: BOB.publicKey.toBase58(),
-      amount: 100,
+      amount: '100',
+      token: 'USDC',
       memo: 'expected memo',
     };
 
@@ -199,7 +238,8 @@ describe('verifyIntent', () => {
       type: 'create_transfer',
       sender: ALICE.publicKey.toBase58(),
       recipient: BOB.publicKey.toBase58(),
-      amount: 100,
+      amount: '100',
+      token: 'USDC',
     };
 
     const result = await verifyIntent(txBase64, intent);

@@ -1,3 +1,5 @@
+import { formatUnits } from '../../amount-utils.js';
+
 export interface SplTokenDecoded {
   type: string;
   params: Record<string, unknown>;
@@ -53,7 +55,7 @@ export function decodeSplToken(
       const mint = accounts[1] ?? null;
       const symbol = mint ? tokenSymbol(mint) : 'unknown';
       const humanAmount = mint
-        ? (Number(amount) / 10 ** decimals).toString()
+        ? formatUnits(amount, decimals)
         : amount.toString();
       return {
         type: 'transfer_checked',
