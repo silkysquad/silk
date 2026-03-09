@@ -211,6 +211,68 @@ describe('matchIntent', () => {
     expect(result.matched).toBe(false);
   });
 
+  it('matches when expectedProgram equals instruction programId', () => {
+    const actions: ActionIntent[] = [{
+      action: 'transfer',
+      from: 'Alice',
+      to: 'Bob',
+      amount: '100',
+    }];
+
+    const instructions: InstructionAnalysis[] = [
+      makeIx({
+        type: 'transfer',
+        programId: 'HANDu9uNdnraNbcueGfXhd3UPu6BXfQroKAsSxFhPXEQ',
+        params: { from: 'Alice', to: 'Bob', amountHuman: '100 USDC' },
+      }),
+    ];
+
+    const result = matchIntent(actions, instructions, [], 'solana', false, 'HANDu9uNdnraNbcueGfXhd3UPu6BXfQroKAsSxFhPXEQ');
+    expect(result.matched).toBe(true);
+    expect(result.discrepancies).toHaveLength(0);
+  });
+
+  it('fails when expectedProgram mismatches instruction programId', () => {
+    const actions: ActionIntent[] = [{
+      action: 'transfer',
+      from: 'Alice',
+      to: 'Bob',
+      amount: '100',
+    }];
+
+    const instructions: InstructionAnalysis[] = [
+      makeIx({
+        type: 'transfer',
+        programId: 'SiLKos3MCFggwLsjSeuRiCdcs2MLoJNwq59XwTvEwcS',
+        params: { from: 'Alice', to: 'Bob', amountHuman: '100 USDC' },
+      }),
+    ];
+
+    const result = matchIntent(actions, instructions, [], 'solana', false, 'HANDu9uNdnraNbcueGfXhd3UPu6BXfQroKAsSxFhPXEQ');
+    expect(result.matched).toBe(false);
+    expect(result.discrepancies.some((d) => d.includes('Expected program'))).toBe(true);
+  });
+
+  it('skips program check when expectedProgram omitted', () => {
+    const actions: ActionIntent[] = [{
+      action: 'transfer',
+      from: 'Alice',
+      to: 'Bob',
+      amount: '100',
+    }];
+
+    const instructions: InstructionAnalysis[] = [
+      makeIx({
+        type: 'transfer',
+        programId: 'any-program',
+        params: { from: 'Alice', to: 'Bob', amountHuman: '100 USDC' },
+      }),
+    ];
+
+    const result = matchIntent(actions, instructions, [], 'solana', false);
+    expect(result.matched).toBe(true);
+  });
+
   it('EVM addresses compared case-insensitively', () => {
     const actions: ActionIntent[] = [{
       action: 'transfer',

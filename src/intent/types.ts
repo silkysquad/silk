@@ -16,6 +16,20 @@ export type TokenRef = {
   token?: string;
 };
 
+// ─── Program identification ──────────────────────────────────
+
+export type ProgramRef = {
+  programName?: string;
+  program?: string;
+};
+
+// ─── Execution context ───────────────────────────────────────
+
+export type ExecutionRef = {
+  signer: string;
+  feePayer?: string;
+};
+
 // ─── Known actions ────────────────────────────────────────────
 
 export type TransferIntent = {
@@ -96,13 +110,13 @@ export type ActionIntent =
 export type SingleIntent = {
   chain: string;
   strict?: boolean;
-} & ActionIntent;
+} & ExecutionRef & ActionIntent & ProgramRef;
 
 export type CompoundIntent = {
   chain: string;
   strict?: boolean;
   actions: ActionIntent[];
-};
+} & ExecutionRef & ProgramRef;
 
 export type Intent = SingleIntent | CompoundIntent;
 

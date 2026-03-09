@@ -21,6 +21,8 @@ export type {
   ActionIntent,
   Constraint,
   TokenRef,
+  ProgramRef,
+  ExecutionRef,
   Confidence,
   TransferIntent,
   SwapIntent,
@@ -31,5 +33,6 @@ export type {
   WithdrawIntent,
   CustomIntent,
   VerifyResult as VerifyResultV2,
+  ProgramInfo,
 } from './intent/index.js';
-export { evaluateConstraint, createTokenRegistry, parseChain, normalizeAddress, isEvmChain } from './intent/index.js';
+export { evaluateConstraint, createTokenRegistry, createProgramRegistry, getProgramRef, getExecutionRef, parseChain, normalizeAddress, isEvmChain } from './intent/index.js';

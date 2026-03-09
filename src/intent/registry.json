@@ -1,0 +1,304 @@
+{
+  "shared": {
+    "tokens": {
+      "USDC": {
+        "name": "USD Coin",
+        "symbol": "USDC",
+        "decimals": 6,
+        "iconUrl": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png"
+      },
+      "USDT": {
+        "name": "Tether USD",
+        "symbol": "USDT",
+        "decimals": 6,
+        "iconUrl": "https://rebelfi.nyc3.cdn.digitaloceanspaces.com/tokens/usdt_logo.png"
+      },
+      "SOL": {
+        "name": "Solana",
+        "symbol": "SOL",
+        "decimals": 9,
+        "iconUrl": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+      },
+      "ETH": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png"
+      },
+      "WETH": {
+        "name": "Wrapped Ether",
+        "symbol": "WETH",
+        "decimals": 18,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png"
+      },
+      "WBTC": {
+        "name": "Wrapped Bitcoin",
+        "symbol": "WBTC",
+        "decimals": 8,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png"
+      },
+      "DAI": {
+        "name": "Dai Stablecoin",
+        "symbol": "DAI",
+        "decimals": 18,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
+      },
+      "MATIC": {
+        "name": "Polygon",
+        "symbol": "MATIC",
+        "decimals": 18,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png"
+      },
+      "POL": {
+        "name": "POL (ex-MATIC)",
+        "symbol": "POL",
+        "decimals": 18,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png"
+      },
+      "mSOL": {
+        "name": "Marinade Staked SOL",
+        "symbol": "mSOL",
+        "decimals": 9
+      },
+      "JitoSOL": {
+        "name": "Jito Staked SOL",
+        "symbol": "JitoSOL",
+        "decimals": 9
+      }
+    }
+  },
+
+  "chains": {
+    "solana": {
+      "icon": "◎",
+      "addressFormat": "base58",
+      "caseSensitive": true,
+      "programs": {
+        "11111111111111111111111111111111": { "name": "System Program", "decoder": "system" },
+        "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA": { "name": "SPL Token", "decoder": "spl-token" },
+        "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb": { "name": "SPL Token 2022", "decoder": "spl-token-2022" },
+        "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJe1bC5": { "name": "Associated Token Account", "decoder": "ata" },
+        "ComputeBudget111111111111111111111111111111": { "name": "Compute Budget", "decoder": "compute-budget" },
+        "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr": { "name": "Memo v2", "decoder": "memo" },
+        "Memo1UhkJBfCvE3urwUn2mNM3VU5IKLxT5em2r85ojk": { "name": "Memo v1", "decoder": "memo" },
+        "HANDu9uNdnraNbcueGfXhd3UPu6BXfQroKAsSxFhPXEQ": { "name": "Handshake", "decoder": "handshake" },
+        "SiLKos3MCFggwLsjSeuRiCdcs2MLoJNwq59XwTvEwcS": { "name": "Silkysig", "decoder": "silkysig" },
+        "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4": { "name": "Jupiter v6", "decoder": "jupiter" },
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc": { "name": "Orca Whirlpool", "decoder": null },
+        "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8": { "name": "Raydium AMM", "decoder": null },
+        "CAMMCzo5YL8w4VFF8KVHr7wifJDiGHoP7cCxSNRA7se7P": { "name": "Raydium CLMM", "decoder": null },
+        "MarinaDE1gza2Y1AUXVsmQnFRaSoHcP2cFQxU1SB2HCc": { "name": "Marinade Finance", "decoder": null },
+        "Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P3BgNEWn": { "name": "Jito Staking", "decoder": null },
+        "CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe": { "name": "CCTP Token Messenger", "decoder": null },
+        "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC": { "name": "CCTP Message Transmitter", "decoder": null }
+      },
+      "networks": {
+        "mainnet": {
+          "blockExplorerTxUrl": "https://solscan.io/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" },
+            "USDT": { "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB" },
+            "SOL": { "address": "So11111111111111111111111111111111111111112" },
+            "mSOL": { "address": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So" },
+            "JitoSOL": { "address": "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn" },
+            "WBTC": { "address": "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh" },
+            "WETH": { "address": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs" },
+            "DAI": { "address": "EjmyN6qEC1Tf1JxiG1ae7UTJhUxSwk1TCWNWqxWV4J6o" }
+          },
+          "cctp": {
+            "domainId": 5,
+            "tokenMessengerAddress": "CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe",
+            "messageTransmitterAddress": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC"
+          }
+        },
+        "devnet": {
+          "blockExplorerTxUrl": "https://solscan.io/tx/{txid}?cluster=devnet",
+          "tokens": {
+            "USDC": { "address": "uSDCYMsmqUKxijtDMwPnkJDnSwXkZ3RFWq6cznL5Lt2" },
+            "USDT": { "address": "USdTT7wzvFCGkabDLMfawUm4QZqFm8qVX69SFjcUtXk" }
+          },
+          "cctp": {
+            "domainId": 5,
+            "tokenMessengerAddress": "CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe",
+            "messageTransmitterAddress": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC"
+          }
+        }
+      }
+    },
+
+    "ethereum": {
+      "icon": "Ξ",
+      "addressFormat": "hex",
+      "caseSensitive": false,
+      "chainId": 1,
+      "programs": {
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": { "name": "USDC", "decoder": "erc20" },
+        "0xdAC17F958D2ee523a2206206994597C13D831ec7": { "name": "USDT", "decoder": "erc20" },
+        "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": { "name": "WETH", "decoder": "weth" },
+        "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45": { "name": "Uniswap V3 SwapRouter02", "decoder": null },
+        "0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B": { "name": "Uniswap Universal Router", "decoder": null },
+        "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2": { "name": "Aave V3 Pool", "decoder": null },
+        "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d": { "name": "CCTP Token Messenger", "decoder": null },
+        "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64": { "name": "CCTP Message Transmitter", "decoder": null }
+      },
+      "networks": {
+        "mainnet": {
+          "chainId": 1,
+          "blockExplorerTxUrl": "https://etherscan.io/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
+            "USDT": { "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7" },
+            "WETH": { "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
+            "WBTC": { "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
+            "DAI": { "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F" }
+          },
+          "cctp": {
+            "domainId": 0,
+            "tokenMessengerAddress": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "messageTransmitterAddress": "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+          }
+        },
+        "sepolia": {
+          "chainId": 11155111,
+          "blockExplorerTxUrl": "https://sepolia.etherscan.io/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0x7F65D6637485C6744475d0f9220Dce2695b30C3F" },
+            "USDT": { "address": "0x404171543Fec71E8E9Cdac46cA143bc191482e2A" }
+          },
+          "cctp": {
+            "domainId": 0,
+            "tokenMessengerAddress": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "messageTransmitterAddress": "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+          }
+        }
+      }
+    },
+
+    "polygon": {
+      "icon": "P",
+      "addressFormat": "hex",
+      "caseSensitive": false,
+      "chainId": 137,
+      "programs": {
+        "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359": { "name": "USDC", "decoder": "erc20" },
+        "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": { "name": "USDT", "decoder": "erc20" },
+        "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270": { "name": "WMATIC", "decoder": "weth" },
+        "0x794a61358D6845594F94dc1DB02A252b5b4814aD": { "name": "Aave V3 Pool", "decoder": null },
+        "0xE592427A0AEce92De3Edee1F18E0157C05861564": { "name": "Uniswap V3 SwapRouter", "decoder": null },
+        "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d": { "name": "CCTP Token Messenger", "decoder": null },
+        "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64": { "name": "CCTP Message Transmitter", "decoder": null }
+      },
+      "networks": {
+        "mainnet": {
+          "chainId": 137,
+          "blockExplorerTxUrl": "https://polygonscan.com/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359" },
+            "USDT": { "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F" },
+            "WETH": { "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619" },
+            "WBTC": { "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6" },
+            "DAI": { "address": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063" },
+            "WMATIC": { "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" }
+          },
+          "cctp": {
+            "domainId": 7,
+            "tokenMessengerAddress": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "messageTransmitterAddress": "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+          }
+        },
+        "amoy": {
+          "chainId": 80002,
+          "blockExplorerTxUrl": "https://amoy.polygonscan.com/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0xac7AB7E28c295275DA0f66E38e7117EAAD2a10Df" },
+            "USDT": { "address": "0x452e6e4e90E21B64DFAF33205E1726D75820947E" }
+          },
+          "cctp": {
+            "domainId": 7,
+            "tokenMessengerAddress": "0x8fe6b999dc680ccfdd5bf7eb0974218be2542daa",
+            "messageTransmitterAddress": "0xe737e5cebeeba77efe34d4aa090756590b1ce275"
+          }
+        }
+      }
+    },
+
+    "base": {
+      "icon": "B",
+      "addressFormat": "hex",
+      "caseSensitive": false,
+      "chainId": 8453,
+      "programs": {
+        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": { "name": "USDC", "decoder": "erc20" },
+        "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2": { "name": "USDT", "decoder": "erc20" },
+        "0x4200000000000000000000000000000000000006": { "name": "WETH", "decoder": "weth" },
+        "0x2626664c2603336E57B271c5C0b26F421741e481": { "name": "Uniswap V3 SwapRouter02", "decoder": null },
+        "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5": { "name": "Aave V3 Pool", "decoder": null },
+        "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d": { "name": "CCTP Token Messenger", "decoder": null },
+        "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64": { "name": "CCTP Message Transmitter", "decoder": null }
+      },
+      "networks": {
+        "mainnet": {
+          "chainId": 8453,
+          "blockExplorerTxUrl": "https://basescan.org/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" },
+            "USDT": { "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2" },
+            "WETH": { "address": "0x4200000000000000000000000000000000000006" },
+            "DAI": { "address": "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb" }
+          },
+          "cctp": {
+            "domainId": 6,
+            "tokenMessengerAddress": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "messageTransmitterAddress": "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+          }
+        },
+        "sepolia": {
+          "chainId": 84532,
+          "blockExplorerTxUrl": "https://sepolia.basescan.org/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e" }
+          },
+          "cctp": {
+            "domainId": 6,
+            "tokenMessengerAddress": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "messageTransmitterAddress": "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+          }
+        }
+      }
+    },
+
+    "arbitrum": {
+      "icon": "A",
+      "addressFormat": "hex",
+      "caseSensitive": false,
+      "chainId": 42161,
+      "programs": {
+        "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": { "name": "USDC", "decoder": "erc20" },
+        "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9": { "name": "USDT", "decoder": "erc20" },
+        "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": { "name": "WETH", "decoder": "weth" },
+        "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45": { "name": "Uniswap V3 SwapRouter02", "decoder": null },
+        "0x794a61358D6845594F94dc1DB02A252b5b4814aD": { "name": "Aave V3 Pool", "decoder": null },
+        "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d": { "name": "CCTP Token Messenger", "decoder": null },
+        "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64": { "name": "CCTP Message Transmitter", "decoder": null }
+      },
+      "networks": {
+        "mainnet": {
+          "chainId": 42161,
+          "blockExplorerTxUrl": "https://arbiscan.io/tx/{txid}",
+          "tokens": {
+            "USDC": { "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" },
+            "USDT": { "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" },
+            "WETH": { "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1" },
+            "WBTC": { "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f" },
+            "DAI": { "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1" }
+          },
+          "cctp": {
+            "domainId": 3,
+            "tokenMessengerAddress": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+            "messageTransmitterAddress": "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,19 +2,25 @@ import type { Intent, VerifyResult } from './types.js';
 import type { AnalyzeOptions, TransactionAnalysis } from '../verify/index.js';
 import { analyzeTransaction as solanaAnalyze } from '../verify/index.js';
 import { parseChain } from './chains.js';
-import { getActions } from './helpers.js';
+import { getActions, getProgramRef } from './helpers.js';
 import { matchIntent } from './matcher.js';
+import { createProgramRegistry } from './program-registry.js';
 
-export type { Intent, SingleIntent, CompoundIntent, ActionIntent, Constraint, TokenRef, VerifyResult, Confidence } from './types.js';
+export type { Intent, SingleIntent, CompoundIntent, ActionIntent, Constraint, TokenRef, ProgramRef, ExecutionRef, VerifyResult, Confidence } from './types.js';
 export type { TransferIntent, SwapIntent, StakeIntent, LendIntent, BorrowIntent, ApproveIntent, WithdrawIntent, CustomIntent } from './types.js';
+export type { ProgramInfo } from './program-registry.js';
 export { evaluateConstraint } from './constraints.js';
 export { createTokenRegistry } from './token-registry.js';
+export { createProgramRegistry } from './program-registry.js';
+export { getProgramRef, getExecutionRef } from './helpers.js';
 export { parseChain, normalizeAddress, isEvmChain } from './chains.js';
 
 // Maps generic action names to adapter-specific decoded instruction types.
 const SOLANA_ACTION_MAP: Record<string, string> = {
   transfer: 'create_transfer',
 };
+
+const programRegistry = createProgramRegistry();
 
 export async function verifyIntent(
   txBytes: string,
@@ -30,9 +36,35 @@ export async function verifyIntent(
     };
   }
 
-  const { chain } = parseChain(intent.chain);
+  const { chain, network } = parseChain(intent.chain);
   const strict = intent.strict ?? false;
   const actions = getActions(intent);
+
+  // Resolve expected program from ProgramRef
+  const programRef = getProgramRef(intent);
+  let expectedProgram: string | undefined;
+
+  if (programRef.program && programRef.programName) {
+    // Both specified: cross-check
+    if (!programRegistry.crossCheck(chain, network, programRef.programName, programRef.program)) {
+      return {
+        matched: false,
+        confidence: 'full',
+        discrepancies: [
+          `Program cross-check failed: name '${programRef.programName}' does not match address '${programRef.program}'.`,
+        ],
+        analysis: { feePayer: '', instructions: [], flags: [], summary: '' },
+      };
+    }
+    expectedProgram = programRef.program;
+  } else if (programRef.program) {
+    expectedProgram = programRef.program;
+  } else if (programRef.programName) {
+    const resolved = programRegistry.resolveName(chain, network, programRef.programName);
+    if (resolved) {
+      expectedProgram = resolved.address;
+    }
+  }
 
   let analysis: TransactionAnalysis;
 
@@ -61,7 +93,7 @@ export async function verifyIntent(
     };
   }
 
-  const result = matchIntent(actions, analysis.instructions, analysis.flags, chain, strict);
+  const result = matchIntent(actions, analysis.instructions, analysis.flags, chain, strict, expectedProgram);
 
   return {
     matched: result.matched,

@@ -5,6 +5,7 @@ describe('Intent types', () => {
   it('single transfer intent is assignable', () => {
     const intent: Intent = {
       chain: 'solana',
+      signer: 'AgXx...w1',
       action: 'transfer',
       from: 'AgXx...w1',
       to: 'BobA...c2',
@@ -17,6 +18,7 @@ describe('Intent types', () => {
   it('compound intent with actions array is assignable', () => {
     const intent: Intent = {
       chain: 'ethereum',
+      signer: '0xAlice',
       actions: [
         { action: 'withdraw', from: '0xAlice', amount: '100', tokenSymbol: 'USDC' },
         { action: 'transfer', from: '0xAlice', to: '0xBob', amount: '100', tokenSymbol: 'USDC' },
@@ -28,6 +30,7 @@ describe('Intent types', () => {
   it('constraint amount is assignable', () => {
     const intent: Intent = {
       chain: 'ethereum',
+      signer: '0xAlice',
       action: 'swap',
       from: '0xAlice',
       tokenIn: { tokenSymbol: 'ETH' },
@@ -41,6 +44,7 @@ describe('Intent types', () => {
   it('custom action intent is assignable', () => {
     const intent: Intent = {
       chain: 'ethereum',
+      signer: '0xAlice',
       action: 'flashLoan',
       from: '0xAlice',
       amount: '10000',
@@ -52,6 +56,7 @@ describe('Intent types', () => {
   it('strict mode is optional and defaults conceptually to false', () => {
     const intent: Intent = {
       chain: 'solana',
+      signer: 'AgXx',
       strict: true,
       action: 'transfer',
       from: 'AgXx',
@@ -65,6 +70,7 @@ describe('Intent types', () => {
   it('chain with network suffix is valid', () => {
     const intent: Intent = {
       chain: 'solana:devnet',
+      signer: 'AgXx',
       action: 'transfer',
       from: 'AgXx',
       to: 'BobA',
@@ -72,5 +78,18 @@ describe('Intent types', () => {
       tokenSymbol: 'USDC',
     };
     expect(intent.chain).toBe('solana:devnet');
+  });
+
+  it('feePayer is optional', () => {
+    const intent: Intent = {
+      chain: 'solana',
+      signer: 'AgXx',
+      feePayer: 'RelayerPubkey',
+      action: 'transfer',
+      from: 'AgXx',
+      to: 'BobA',
+      amount: '100',
+    };
+    expect(intent.feePayer).toBe('RelayerPubkey');
   });
 });

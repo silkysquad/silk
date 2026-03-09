@@ -1,10 +1,17 @@
 {
   "name": "@silkysquad/silk",
-  "version": "1.0.9",
+  "version": "2.0.0",
   "description": "Agent banking and payments on Solana — cancellable escrow stablecoin transfers and policy-controlled accounts",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "silky": "dist/cli.js"
   },
@@ -12,7 +19,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', '{\\\"type\\\":\\\"commonjs\\\"}')\"",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "vitest run",

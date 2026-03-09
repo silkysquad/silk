@@ -51,6 +51,7 @@ describe('verifyIntent (cross-chain API)', () => {
 
     const intent: Intent = {
       chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
       action: 'transfer',
       from: ALICE.publicKey.toBase58(),
       to: BOB.publicKey.toBase58(),
@@ -70,6 +71,7 @@ describe('verifyIntent (cross-chain API)', () => {
 
     const intent: Intent = {
       chain: 'solana',
+      signer: wrong.publicKey.toBase58(),
       action: 'transfer',
       from: wrong.publicKey.toBase58(),
       to: BOB.publicKey.toBase58(),
@@ -86,6 +88,7 @@ describe('verifyIntent (cross-chain API)', () => {
 
     const intent: Intent = {
       chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
       action: 'transfer',
       from: ALICE.publicKey.toBase58(),
       to: BOB.publicKey.toBase58(),
@@ -101,6 +104,7 @@ describe('verifyIntent (cross-chain API)', () => {
     const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 100_000_000n);
 
     const intent = {
+      signer: ALICE.publicKey.toBase58(),
       action: 'transfer',
       from: ALICE.publicKey.toBase58(),
       to: BOB.publicKey.toBase58(),
@@ -146,6 +150,7 @@ describe('verifyIntent (cross-chain API)', () => {
 
     const intent: Intent = {
       chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
       strict: true,
       action: 'transfer',
       from: ALICE.publicKey.toBase58(),
@@ -155,6 +160,60 @@ describe('verifyIntent (cross-chain API)', () => {
 
     const result = await verifyIntent(txBase64, intent);
     expect(result.matched).toBe(false);
+  });
+
+  it('matches when programName resolves to correct program', async () => {
+    const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 100_000_000n);
+
+    const intent: Intent = {
+      chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
+      action: 'transfer',
+      from: ALICE.publicKey.toBase58(),
+      to: BOB.publicKey.toBase58(),
+      amount: '100',
+      programName: 'handshake',
+    };
+
+    const result = await verifyIntent(txBase64, intent);
+    expect(result.matched).toBe(true);
+  });
+
+  it('fails when programName resolves to wrong program', async () => {
+    const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 100_000_000n);
+
+    const intent: Intent = {
+      chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
+      action: 'transfer',
+      from: ALICE.publicKey.toBase58(),
+      to: BOB.publicKey.toBase58(),
+      amount: '100',
+      programName: 'silkysig',
+    };
+
+    const result = await verifyIntent(txBase64, intent);
+    expect(result.matched).toBe(false);
+    expect(result.discrepancies.some((d) => d.includes('Expected program'))).toBe(true);
+  });
+
+  it('fails via cross-check when programName and program mismatch', async () => {
+    const txBase64 = buildHandshakeTransferTx(ALICE, BOB, 100_000_000n);
+
+    const intent: Intent = {
+      chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
+      action: 'transfer',
+      from: ALICE.publicKey.toBase58(),
+      to: BOB.publicKey.toBase58(),
+      amount: '100',
+      programName: 'handshake',
+      program: 'SiLKos3MCFggwLsjSeuRiCdcs2MLoJNwq59XwTvEwcS',
+    };
+
+    const result = await verifyIntent(txBase64, intent);
+    expect(result.matched).toBe(false);
+    expect(result.discrepancies.some((d) => d.includes('cross-check'))).toBe(true);
   });
 
   it('non-strict mode ignores extra instructions', async () => {
@@ -191,6 +250,7 @@ describe('verifyIntent (cross-chain API)', () => {
 
     const intent: Intent = {
       chain: 'solana',
+      signer: ALICE.publicKey.toBase58(),
       action: 'transfer',
       from: ALICE.publicKey.toBase58(),
       to: BOB.publicKey.toBase58(),

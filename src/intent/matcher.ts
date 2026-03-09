@@ -21,6 +21,7 @@ export function matchIntent(
   globalFlags: RiskFlag[],
   chain: string,
   strict: boolean,
+  expectedProgram?: string,
 ): MatchResult {
   const discrepancies: string[] = [];
   let lowestConfidence: Confidence = 'full';
@@ -36,7 +37,7 @@ export function matchIntent(
   const usedIndices = new Set<number>();
 
   for (const action of actions) {
-    const actionResult = matchSingleAction(action, instructions, usedIndices, chain);
+    const actionResult = matchSingleAction(action, instructions, usedIndices, chain, expectedProgram);
     discrepancies.push(...actionResult.discrepancies);
 
     if (confidenceRank(actionResult.confidence) < confidenceRank(lowestConfidence)) {
@@ -73,6 +74,7 @@ function matchSingleAction(
   instructions: InstructionAnalysis[],
   usedIndices: Set<number>,
   chain: string,
+  expectedProgram?: string,
 ): SingleActionResult {
   const discrepancies: string[] = [];
 
@@ -84,6 +86,11 @@ function matchSingleAction(
   if (!match) {
     discrepancies.push(`Expected a '${action.action}' instruction but none was found in the transaction.`);
     return { confidence: 'full', discrepancies, matchedIndex: null };
+  }
+
+  // Check expected program
+  if (expectedProgram && match.programId !== expectedProgram) {
+    discrepancies.push(`Expected program ${expectedProgram} but instruction calls ${match.programId}`);
   }
 
   // Unknown actions get structural match only
