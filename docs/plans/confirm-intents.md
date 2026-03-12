@@ -1,0 +1,2 @@
+
+confirm that the @docs/design/intent-framework.md design and the @docs/design/tx-verification-design.md design have been implemented. update the docs after vefication with any discrepancies or deviations from the original design, and provide examples of how to use the implemented features in a new @docs/usage.md doc
