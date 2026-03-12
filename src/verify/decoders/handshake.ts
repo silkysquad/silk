@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { formatUnits } from '../../amount-utils.js';
 
 export interface HandshakeDecoded {
   type: string;
@@ -87,7 +88,7 @@ export function decodeHandshake(
         return { type: 'create_transfer', params: { sender: accounts[0], decodeError: 'failed to parse args' } };
       }
 
-      const humanAmount = (Number(amount) / 10 ** decimals).toString();
+      const humanAmount = formatUnits(amount, decimals);
 
       return {
         type: 'create_transfer',

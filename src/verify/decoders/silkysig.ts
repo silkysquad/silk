@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { formatUnits } from '../../amount-utils.js';
 
 export interface SilkysigDecoded {
   type: string;
@@ -72,7 +73,7 @@ export function decodeSilkysig(
       const decimals = mint ? tokenDecimals(mint) : 6;
       let amount: bigint;
       try { [amount, offset] = readU64(data, offset); } catch { return { type: 'deposit', params: { depositor: accounts[0] } }; }
-      const humanAmount = (Number(amount) / 10 ** decimals).toString();
+      const humanAmount = formatUnits(amount, decimals);
       return {
         type: 'deposit',
         params: {
@@ -92,7 +93,7 @@ export function decodeSilkysig(
       const decimals = mint ? tokenDecimals(mint) : 6;
       let amount: bigint;
       try { [amount, offset] = readU64(data, offset); } catch { return { type: 'transfer_from_account', params: { signer: accounts[0] } }; }
-      const humanAmount = (Number(amount) / 10 ** decimals).toString();
+      const humanAmount = formatUnits(amount, decimals);
       return {
         type: 'transfer_from_account',
         params: {
