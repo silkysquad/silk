@@ -36,3 +36,14 @@ export type {
   ProgramInfo,
 } from './intent/index.js';
 export { evaluateConstraint, createTokenRegistry, createProgramRegistry, getProgramRef, getExecutionRef, parseChain, normalizeAddress, isEvmChain } from './intent/index.js';
+
+// Standing orders
+export {
+  loadOrders, saveOrders, addOrder, getOrder, updateOrder,
+  evaluateOrders,
+  parseSwapSugar,
+} from './orders/index.js';
+export type {
+  Order, OrderStatus, ExecutionPolicy, OrderEvent, EvaluationResult, PriceFeed,
+  OrdersStore, EvaluateOptions, ServerEvaluateResponse, SwapSugarInput,
+} from './orders/index.js';
