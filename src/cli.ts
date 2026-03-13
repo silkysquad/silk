@@ -16,6 +16,7 @@ import { accountSync, accountStatus, accountEvents, accountDeposit, accountWithd
 import { contactsAdd, contactsRemove, contactsList, contactsGet } from './commands/contacts.js';
 import { chat } from './commands/chat.js';
 import { init } from './commands/init.js';
+import { ordersCreate, ordersList, ordersGet, ordersCancel, ordersEvaluate } from './commands/orders.js';
 import { wrapCommand } from './output.js';
 
 const program = new Command();
@@ -197,5 +198,42 @@ program
   .argument('<message>', 'Message to send to support')
   .description('Chat with SilkyWay support agent')
   .action(wrapCommand(chat));
+
+// orders commands
+const orders = program.command('orders').description('Manage standing orders');
+orders
+  .command('create')
+  .argument('<intent-or-action>', 'JSON intent string or action name (e.g., "swap")')
+  .option('--sell <amount-symbol>', 'Sell amount and symbol (e.g., "500 USDC")')
+  .option('--buy <symbol>', 'Buy token symbol (e.g., "SOL")')
+  .option('--price <number>', 'Target price')
+  .option('--slippage <percent>', 'Max slippage percent (default: 0.1, max: 10)')
+  .option('--expires <duration>', 'Expiry (e.g., "7d", "24h", "30m", or ISO date)')
+  .option('--cooldown <seconds>', 'Seconds between attempts (default: 60)')
+  .option('--max-attempts <number>', 'Max evaluation attempts')
+  .option('--wallet <label>', 'Wallet to use')
+  .description('Create a standing order from JSON intent or swap sugar')
+  .action(wrapCommand(ordersCreate));
+orders
+  .command('list')
+  .option('--status <status>', 'Filter by status')
+  .description('List all standing orders')
+  .action(wrapCommand(ordersList));
+orders
+  .command('get')
+  .argument('<orderId>', 'Order ID')
+  .description('Get order details')
+  .action(wrapCommand(ordersGet));
+orders
+  .command('cancel')
+  .argument('<orderId>', 'Order ID')
+  .description('Cancel a pending order')
+  .action(wrapCommand(ordersCancel));
+orders
+  .command('evaluate')
+  .option('--dry-run', 'Show what would happen without executing')
+  .option('--wallet <label>', 'Wallet to use')
+  .description('Evaluate all pending orders (run on heartbeat)')
+  .action(wrapCommand(ordersEvaluate));
 
 program.parse();
